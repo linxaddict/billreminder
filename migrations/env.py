@@ -18,7 +18,7 @@ logger = logging.getLogger('alembic.env')
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 
-from billreminder.model.models import *
+from billreminder.model.db import *
 # target_metadata = User.Base.metadata
 
 from flask import current_app

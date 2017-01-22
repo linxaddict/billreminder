@@ -2,7 +2,10 @@ from marshmallow import fields
 from marshmallow_sqlalchemy import ModelSchema
 
 from billreminder.extensions import ma, db
-from billreminder.model.models import Role, ReminderDate, Reminder, Bill
+from billreminder.model.db import Role, ReminderDate, Reminder, Bill
+
+__author__ = 'Marcin Przepiórkowski'
+__email__ = 'mprzepiorkowski@gmail.com'
 
 
 class RoleSchema(ma.ModelSchema):
@@ -46,9 +49,12 @@ class BillSchema(ModelSchema):
     participants = ma.List(ma.Nested(ParticipantSchema))
 
 
-role_schema = RoleSchema()
-user_schema = UserSchema()
-reminder_date_schema = ReminderDateSchema()
-reminder_schema = ReminderSchema()
-participant_schema = ParticipantSchema()
-bill_schema = BillSchema()
+class PaginationSchema(ma.Schema):
+    page = fields.Integer(dump_only=True)
+    has_next = fields.Boolean(dump_only=True)
+    total = fields.Integer(dump_to='total_items', dump_only=True)
+
+
+class PaginatedListSchema(ma.Schema):
+    pagination = fields.Nested(PaginationSchema, dump_only=True)
+    items = fields.Nested(BillSchema, many=True, dump_only=True)

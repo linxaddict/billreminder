@@ -4,19 +4,27 @@ from flask_restful import Resource
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY, \
     HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_204_NO_CONTENT
-from billreminder.model.models import Bill
+from billreminder.model.db import Bill
+from billreminder.model.pagination import PaginatedList
 from billreminder.model.schemas import BillSchema
+from billreminder.view.paginated_view import PaginatedView
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class BillsView(Resource):
+class BillsView(PaginatedView):
     schema = BillSchema(strict=True)
 
     def get(self):
-        bills = Bill.query.all()
-        return self.schema.dump(bills, many=True)
+        try:
+            page = int(request.args.get(self.QUERY_ARG_PAGE, self.DEFAULT_PAGE))
+        except ValueError:
+            page = self.DEFAULT_PAGE
+
+        bills = Bill.query.paginate(page, self.ITEMS_PER_PAGE)
+
+        return self.paginated_schema.dump(PaginatedList(bills)).data
 
     def post(self):
         json_data = request.get_json()

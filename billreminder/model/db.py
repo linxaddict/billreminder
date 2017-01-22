@@ -6,6 +6,9 @@ from flask.ext.login import UserMixin
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from billreminder.extensions import bcrypt
 
+__author__ = 'Marcin Przepiórkowski'
+__email__ = 'mprzepiorkowski@gmail.com'
+
 
 class Role(SurrogatePK, Model):
     __tablename__ = 'roles'

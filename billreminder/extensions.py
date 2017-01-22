@@ -5,7 +5,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-api = Api()
+api_v1 = Api(prefix='v1')
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 db = SQLAlchemy()
