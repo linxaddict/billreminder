@@ -2,6 +2,7 @@ import datetime as dt
 
 import sqlalchemy
 from flask.ext.login import UserMixin
+from itsdangerous import Serializer, SignatureExpired, BadSignature
 
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from billreminder.extensions import bcrypt
@@ -27,19 +28,18 @@ class Role(SurrogatePK, Model):
 class User(UserMixin, SurrogatePK, Model):
     __tablename__ = 'users'
 
-    username = Column(db.String, unique=True, nullable=False)
     email = Column(db.String, unique=True, nullable=False)
     #: The hashed password
     password = Column(db.Binary, nullable=True)
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     first_name = Column(db.String, nullable=True)
     last_name = Column(db.String, nullable=True)
-    active = Column(db.Boolean, default=False)
+    active = Column(db.Boolean, default=True)
     is_admin = Column(db.Boolean, default=False)
 
-    def __init__(self, username, email, password=None, **kwargs):
+    def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
         """Create instance."""
-        db.Model.__init__(self, username=username, email=email, **kwargs)
+        db.Model.__init__(self, email=email, first_name=first_name, last_name=last_name, **kwargs)
         if password:
             self.set_password(password)
         else:
@@ -52,6 +52,27 @@ class User(UserMixin, SurrogatePK, Model):
     def check_password(self, value):
         """Check password."""
         return bcrypt.check_password_hash(self.password, value)
+
+    def generate_auth_token(self):
+        from autoapp import app
+        s = Serializer(app.config['SECRET_KEY'])
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        from autoapp import app
+        s = Serializer(app.config['SECRET_KEY'])
+
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None  # valid token, but expired
+        except BadSignature:
+            return None  # invalid token
+
+        user = User.query.get(data['id'])
+
+        return user
 
     @property
     def full_name(self):

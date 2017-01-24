@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from sqlalchemy.orm.exc import NoResultFound
 
 from billreminder import commands
+from billreminder.api.v1.auth import RegistrationView
 from billreminder.api.v1.bills import BillsView, BillView
 from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_v1 as api_v1_config
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
@@ -28,6 +29,7 @@ def create_app(config_object=ProdConfig):
 def register_api_resources():
     api_v1_config.add_resource(BillsView, '/bills')
     api_v1_config.add_resource(BillView, '/bills/<int:bill_id>')
+    api_v1_config.add_resource(RegistrationView, '/auth/register')
 
 
 def register_extensions(app):

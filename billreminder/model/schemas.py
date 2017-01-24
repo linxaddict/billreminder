@@ -13,10 +13,10 @@ class RoleSchema(ma.ModelSchema):
         model = Role
 
 
-class UserSchema(ma.ModelSchema):
-    username = fields.String(required=False)
-    email = fields.Email()
-    created_at = fields.DateTime()
+class UserSchema(ma.Schema):
+    id = fields.Integer(dump_only=True)
+    email = fields.Email(required=True)
+    password = fields.String(required=True, load_only=True)
     first_name = fields.String()
     last_name = fields.String()
 
