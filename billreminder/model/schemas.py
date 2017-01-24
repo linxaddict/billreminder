@@ -21,6 +21,11 @@ class UserSchema(ma.Schema):
     last_name = fields.String()
 
 
+class LoginSchema(ma.Schema):
+    email = fields.Email(required=True)
+    password = fields.String(required=True)
+
+
 class ReminderDateSchema(ma.ModelSchema):
     class Meta:
         model = ReminderDate

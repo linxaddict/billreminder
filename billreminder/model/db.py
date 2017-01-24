@@ -1,7 +1,8 @@
 import datetime as dt
 
 import sqlalchemy
-from flask.ext.login import UserMixin
+from flask_login import UserMixin
+from flask import current_app as app
 from itsdangerous import Serializer, SignatureExpired, BadSignature
 
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
@@ -54,13 +55,11 @@ class User(UserMixin, SurrogatePK, Model):
         return bcrypt.check_password_hash(self.password, value)
 
     def generate_auth_token(self):
-        from autoapp import app
         s = Serializer(app.config['SECRET_KEY'])
         return s.dumps({'id': self.id})
 
     @staticmethod
     def verify_auth_token(token):
-        from autoapp import app
         s = Serializer(app.config['SECRET_KEY'])
 
         try:

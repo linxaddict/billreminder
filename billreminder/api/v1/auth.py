@@ -3,9 +3,9 @@ from flask_restful import Resource
 
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_201_CREATED, \
-    HTTP_409_CONFLICT
+    HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED, HTTP_200_OK
 from billreminder.model.db import User
-from billreminder.model.schemas import UserSchema
+from billreminder.model.schemas import UserSchema, LoginSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -41,3 +41,25 @@ class RegistrationView(Resource):
             return jsonify(errors), HTTP_422_UNPROCESSABLE_ENTITY
 
         return inserted_user, HTTP_201_CREATED
+
+
+class LoginView(Resource):
+    schema = LoginSchema(strict=True)
+
+    def post(self):
+        json_data = request.get_json()
+
+        if not json_data:
+            return {'error': 'No input data provided'}, HTTP_400_BAD_REQUEST
+
+        user_data, errors = self.schema.load(request.get_json())
+
+        existing_user = User.query.filter(User.email == user_data['email']).first()
+        if not existing_user:
+            return {'error': 'Invalid e-mail address or password'}, HTTP_401_UNAUTHORIZED
+
+        user = User.query.filter(User.email == user_data['email']).first()
+        if not user.check_password(user_data['password']):
+            return {'error': "Invalid e-mail address or password"}, HTTP_401_UNAUTHORIZED
+
+        return {'token': user.generate_auth_token()}, HTTP_200_OK
