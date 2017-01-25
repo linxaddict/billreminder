@@ -56,7 +56,7 @@ class User(UserMixin, SurrogatePK, Model):
 
     def generate_auth_token(self):
         s = Serializer(app.config['SECRET_KEY'])
-        return s.dumps(str(self.id))
+        return s.dumps({'id': self.id})
 
     @staticmethod
     def verify_auth_token(token):
