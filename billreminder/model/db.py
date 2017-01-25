@@ -3,7 +3,7 @@ import datetime as dt
 import sqlalchemy
 from flask_login import UserMixin
 from flask import current_app as app
-from itsdangerous import Serializer, SignatureExpired, BadSignature
+from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSerializer as Serializer
 
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from billreminder.extensions import bcrypt
@@ -56,7 +56,7 @@ class User(UserMixin, SurrogatePK, Model):
 
     def generate_auth_token(self):
         s = Serializer(app.config['SECRET_KEY'])
-        return s.dumps({'id': self.id})
+        return s.dumps(str(self.id))
 
     @staticmethod
     def verify_auth_token(token):

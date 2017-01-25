@@ -4,8 +4,9 @@ from flask_restful import Resource
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY, HTTP_201_CREATED, \
     HTTP_409_CONFLICT, HTTP_401_UNAUTHORIZED, HTTP_200_OK
+from billreminder.model.auth import TokenResponse
 from billreminder.model.db import User
-from billreminder.model.schemas import UserSchema, LoginSchema
+from billreminder.model.schemas import UserSchema, LoginSchema, TokenResponseSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -45,6 +46,7 @@ class RegistrationView(Resource):
 
 class LoginView(Resource):
     schema = LoginSchema(strict=True)
+    token_schema = TokenResponseSchema(strict=True)
 
     def post(self):
         json_data = request.get_json()
@@ -62,4 +64,4 @@ class LoginView(Resource):
         if not user.check_password(user_data['password']):
             return {'error': "Invalid e-mail address or password"}, HTTP_401_UNAUTHORIZED
 
-        return {'token': user.generate_auth_token()}, HTTP_200_OK
+        return self.token_schema.dump(TokenResponse(user.generate_auth_token())).data, HTTP_200_OK

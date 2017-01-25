@@ -26,6 +26,10 @@ class LoginSchema(ma.Schema):
     password = fields.String(required=True)
 
 
+class TokenResponseSchema(ma.Schema):
+    token = fields.String(required=True)
+
+
 class ReminderDateSchema(ma.ModelSchema):
     class Meta:
         model = ReminderDate
