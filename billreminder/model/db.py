@@ -1,8 +1,7 @@
 import datetime as dt
 
-import sqlalchemy
-from flask_login import UserMixin
 from flask import current_app as app
+from flask_login import UserMixin
 from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSerializer as Serializer
 
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
@@ -37,6 +36,7 @@ class User(UserMixin, SurrogatePK, Model):
     last_name = Column(db.String, nullable=True)
     active = Column(db.Boolean, default=True)
     is_admin = Column(db.Boolean, default=False)
+    avatar = Column(db.String, nullable=True)
 
     def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
         """Create instance."""
@@ -124,12 +124,3 @@ class Bill(SurrogatePK, Model):
 
     participants = db.relationship('Participant', secondary=participants_bills,
                                    backref=db.backref('participants', lazy='dynamic'))
-
-
-class Author(Model):
-    __tablename__ = 'authors'
-    id = Column(sqlalchemy.Integer, primary_key=True)
-    name = Column(sqlalchemy.String)
-
-    def __repr__(self):
-        return '<Author(name={self.name!r})>'.format(self=self)
