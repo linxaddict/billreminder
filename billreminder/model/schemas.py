@@ -19,6 +19,13 @@ class UserSchema(ma.Schema):
     password = fields.String(required=True, load_only=True)
     first_name = fields.String()
     last_name = fields.String()
+    avatar = fields.String()
+
+
+class UserUpdateSchema(ma.Schema):
+    email = fields.Email()
+    first_name = fields.String()
+    last_name = fields.String()
 
 
 class LoginSchema(ma.Schema):

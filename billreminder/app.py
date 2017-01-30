@@ -5,6 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from billreminder import commands
 from billreminder.api.v1.auth import RegistrationView, LoginView
 from billreminder.api.v1.bills import BillsView, BillView
+from billreminder.api.v1.profile import UserView
 from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_v1 as api_v1_config
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from billreminder.settings import ProdConfig
@@ -31,6 +32,7 @@ def register_api_resources():
     api_v1_config.add_resource(BillView, '/bills/<int:bill_id>')
     api_v1_config.add_resource(RegistrationView, '/auth/register')
     api_v1_config.add_resource(LoginView, '/auth/login')
+    api_v1_config.add_resource(UserView, '/profile')
 
 
 def register_extensions(app):

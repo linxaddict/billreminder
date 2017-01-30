@@ -1,19 +1,19 @@
 from flask import request, jsonify
 from flask_restful import Resource
 
+from billreminder.common.resource import PaginationMixin, AuthResource
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_422_UNPROCESSABLE_ENTITY, \
     HTTP_404_NOT_FOUND, HTTP_200_OK, HTTP_204_NO_CONTENT
 from billreminder.model.db import Bill
 from billreminder.model.pagination import PaginatedList
 from billreminder.model.schemas import BillSchema
-from billreminder.view.paginated_view import PaginatedView
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class BillsView(PaginatedView):
+class BillsView(PaginationMixin, AuthResource):
     schema = BillSchema(strict=True)
 
     def get(self):
