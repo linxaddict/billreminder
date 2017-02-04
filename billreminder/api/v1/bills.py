@@ -8,13 +8,13 @@ __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-@api_v1.resource('/bills', '/bills/')
+@api_v1.resource('/bills', strict_slashes=False)
 class BillsView(AuthMixin, ListCreateResource):
     schema = BillSchema(strict=True)
     model = Bill
 
 
-@api_v1.resource('/bills/<int:id>', '/bills/<int:id>/')
+@api_v1.resource('/bills/<int:id>', strict_slashes=False)
 class BillView(AuthMixin, RetrieveUpdateDestroyResource):
     schema = BillSchema(strict=True)
     model = Bill

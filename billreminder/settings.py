@@ -1,7 +1,7 @@
 import os
 
 
-class Config(object):
+class Config:
     """Base configuration."""
 
     SECRET_KEY = os.environ.get('BILL_REMINDER_SECRET', 'secret-key')  # TODO: Change me
@@ -13,6 +13,7 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    PHOTOS_DIR = 'photos'
 
 
 class ProdConfig(Config):

@@ -14,7 +14,7 @@ __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-@api_v1.resource('/auth/register', '/auth/register/')
+@api_v1.resource('/auth/register', strict_slashes=False)
 class RegistrationView(Resource):
     schema = UserSchema(strict=True)
 
@@ -42,7 +42,7 @@ class RegistrationView(Resource):
         return self.schema.dump(user).data, HTTP_201_CREATED
 
 
-@api_v1.resource('/auth/login', '/auth/login/')
+@api_v1.resource('/auth/login', strict_slashes=False)
 class LoginView(Resource):
     schema = LoginSchema(strict=True)
     token_schema = TokenResponseSchema(strict=True)
