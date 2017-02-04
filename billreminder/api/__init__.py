@@ -1,4 +1,5 @@
 from flask import Blueprint
+from billreminder.api.v1 import *
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

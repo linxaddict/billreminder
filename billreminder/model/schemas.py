@@ -71,6 +71,9 @@ class PaginationSchema(ma.Schema):
     total = fields.Integer(dump_to='total_items', dump_only=True)
 
 
-class PaginatedListSchema(ma.Schema):
-    pagination = fields.Nested(PaginationSchema, dump_only=True)
-    items = fields.Nested(BillSchema, many=True, dump_only=True)
+def create_paginated_list_schema(nested_schema, **kwargs):
+    class PaginatedListSchema(ma.Schema):
+        pagination = fields.Nested(PaginationSchema, dump_only=True)
+        items = fields.Nested(nested_schema, many=True, dump_only=True)
+
+    return PaginatedListSchema(**kwargs)
