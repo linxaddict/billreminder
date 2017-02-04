@@ -54,6 +54,13 @@ class PhotoView(AuthMixin, BaseApiResource):
         if ext:
             photo_name = '{0}{1}'.format(photo_name, ext)
 
+        if self.current_user.avatar:
+            _, old_file = os.path.split(self.current_user.avatar)
+            old_file_path = os.path.join(app.config['PHOTOS_DIR'], old_file)
+
+            if os.path.exists(old_file_path):
+                os.remove(old_file_path)
+
         photo.save(os.path.join(app.config['PHOTOS_DIR'], photo_name))
 
         url = request.url
