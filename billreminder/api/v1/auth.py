@@ -22,13 +22,13 @@ class RegistrationView(Resource):
         json_data = request.get_json()
 
         if not json_data:
-            return ApiErrors.NO_INPUT_DATA
+            return ApiErrors.NO_INPUT_DATA.value
 
         user_data, errors = self.schema.load(request.get_json())
 
         existing_user = User.query.filter(User.email == user_data['email']).one_or_none()
         if existing_user:
-            return ApiErrors.EMAIL_ALREADY_TAKEN
+            return ApiErrors.EMAIL_ALREADY_TAKEN.value
 
         if errors:
             return jsonify(errors), HTTP_400_BAD_REQUEST
@@ -51,16 +51,16 @@ class LoginView(Resource):
         json_data = request.get_json()
 
         if not json_data:
-            return ApiErrors.NO_INPUT_DATA
+            return ApiErrors.NO_INPUT_DATA.value
 
         user_data, errors = self.schema.load(request.get_json())
 
         existing_user = User.query.filter(User.email == user_data['email']).one_or_none()
         if not existing_user:
-            return ApiErrors.INVALID_EMAIL_OR_PASSWORD
+            return ApiErrors.INVALID_EMAIL_OR_PASSWORD.value
 
         user = User.query.filter(User.email == user_data['email']).one_or_none()
         if not user.check_password(user_data['password']):
-            return ApiErrors.INVALID_EMAIL_OR_PASSWORD
+            return ApiErrors.INVALID_EMAIL_OR_PASSWORD.value
 
         return self.token_schema.dump(TokenResponse(user.generate_auth_token())).data, HTTP_200_OK

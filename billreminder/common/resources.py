@@ -18,9 +18,9 @@ class RetrieveMixin:
         try:
             entity = self.execute_query(**kwargs)
         except NoResultFound:
-            return ApiErrors.NO_RESULT_FOUND
+            return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
-            return ApiErrors.MULTIPLE_RESULTS_FOUND
+            return ApiErrors.MULTIPLE_RESULTS_FOUND.value
 
         return self.schema.dump(entity).data, HTTP_200_OK
 
@@ -30,9 +30,9 @@ class DestroyMixin:
         try:
             entity = self.execute_query(**kwargs)
         except NoResultFound:
-            return ApiErrors.NO_RESULT_FOUND
+            return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
-            return ApiErrors.MULTIPLE_RESULTS_FOUND
+            return ApiErrors.MULTIPLE_RESULTS_FOUND.value
 
         db.session.delete(entity)
         db.session.commit()
@@ -45,9 +45,9 @@ class UpdateMixin:
         try:
             entity = self.execute_query(**kwargs)
         except NoResultFound:
-            return ApiErrors.NO_RESULT_FOUND
+            return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
-            return ApiErrors.MULTIPLE_RESULTS_FOUND
+            return ApiErrors.MULTIPLE_RESULTS_FOUND.value
 
         json_data = request.get_json()
         errors = self.schema.validate(json_data, db.session)

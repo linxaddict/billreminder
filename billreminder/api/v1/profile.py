@@ -45,7 +45,7 @@ class PhotoView(AuthMixin, BaseApiResource):
     def post(self):
         files = request.files
         if not files or 'photo' not in files:
-            return ApiErrors.NO_INPUT_DATA
+            return ApiErrors.NO_INPUT_DATA.value
 
         photo = request.files['photo']
         _, ext = os.path.splitext(photo.filename)
