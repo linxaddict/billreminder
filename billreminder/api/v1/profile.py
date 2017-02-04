@@ -3,6 +3,7 @@ import uuid
 
 from flask import json
 from flask import request, jsonify, current_app as app
+from flask import send_from_directory
 
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
@@ -47,8 +48,23 @@ class PhotoView(AuthMixin, BaseApiResource):
             return ApiErrors.NO_INPUT_DATA
 
         photo = request.files['photo']
+        _, ext = os.path.splitext(photo.filename)
+
         photo_name = str(uuid.uuid4())
+        if ext:
+            photo_name = '{0}{1}'.format(photo_name, ext)
 
         photo.save(os.path.join(app.config['PHOTOS_DIR'], photo_name))
 
+        url = request.url
+        avatar_url = '{0}/{1}'.format(url, photo_name)
+
+        self.current_user.update(avatar=avatar_url)
+
         return json.dumps({'filename': photo_name})
+
+
+@api_v1.resource('/profile/photo/<string:name>', strict_slashes=False)
+class FetchPhotoView(BaseApiResource):
+    def get(self, name):
+        return send_from_directory(os.path.join(os.getcwd(), app.config['PHOTOS_DIR']), name)

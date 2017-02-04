@@ -48,3 +48,6 @@ venv/
 
 # PyCharm
 .idea/
+
+# Photos
+photos/
