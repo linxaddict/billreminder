@@ -13,10 +13,18 @@ __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class RetrieveMixin:
+class BaseApiMixin:
+    def has_access(self, instance):
+        return True
+
+
+class RetrieveMixin(BaseApiMixin):
     def retrieve(self, *args, **kwargs):
         try:
             entity = self.execute_query(**kwargs)
+
+            if not self.has_access(entity):
+                return ApiErrors.ACCESS_DENIED.value
         except NoResultFound:
             return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
@@ -25,25 +33,37 @@ class RetrieveMixin:
         return self.schema.dump(entity).data, HTTP_200_OK
 
 
-class DestroyMixin:
+class DestroyMixin(BaseApiMixin):
+    def delete_instance(self, instance):
+        db.session.delete(instance)
+        db.session.commit()
+
     def destroy(self, *args, **kwargs):
         try:
             entity = self.execute_query(**kwargs)
+
+            if not self.has_access(entity):
+                return ApiErrors.ACCESS_DENIED.value
         except NoResultFound:
             return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
             return ApiErrors.MULTIPLE_RESULTS_FOUND.value
 
-        db.session.delete(entity)
-        db.session.commit()
+        self.delete_instance(entity)
 
         return HTTP_204_NO_CONTENT
 
 
-class UpdateMixin:
+class UpdateMixin(BaseApiMixin):
+    def update_instance(self, instance, json_data):
+        instance.update(**json_data)
+
     def update(self, *args, **kwargs):
         try:
             entity = self.execute_query(**kwargs)
+
+            if not self.has_access(entity):
+                return ApiErrors.ACCESS_DENIED.value
         except NoResultFound:
             return ApiErrors.NO_RESULT_FOUND.value
         except MultipleResultsFound:
@@ -55,12 +75,16 @@ class UpdateMixin:
         if errors:
             return jsonify(errors), HTTP_400_BAD_REQUEST
 
-        entity.update(**json_data)
+        self.update_instance(entity, json_data)
 
         return self.schema.dump(entity).data, HTTP_200_OK
 
 
-class CreateMixin:
+class CreateMixin(BaseApiMixin):
+    def create_instance(self, instance):
+        db.session.add(instance)
+        db.session.commit()
+
     def create(self, *args, **kwargs):
         json_data = request.get_json()
         entity, errors = self.schema.load(json_data)
@@ -68,13 +92,12 @@ class CreateMixin:
         if errors:
             return jsonify(errors), HTTP_400_BAD_REQUEST
 
-        db.session.add(entity)
-        db.session.commit()
+        self.create_instance(entity)
 
         return self.schema.dump(entity).data, HTTP_201_CREATED
 
 
-class ListMixin:
+class ListMixin(BaseApiMixin):
     QUERY_ARG_PAGE = 'page'
     DEFAULT_PAGE = 1
     ITEMS_PER_PAGE = 50

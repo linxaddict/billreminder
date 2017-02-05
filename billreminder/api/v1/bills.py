@@ -13,8 +13,15 @@ class BillsView(AuthMixin, ListCreateResource):
     schema = BillSchema(strict=True)
     model = Bill
 
+    def create_instance(self, instance):
+        instance.participants.append(self.current_user)
+        super().create_instance(instance)
+
 
 @api_v1.resource('/bills/<int:id>', strict_slashes=False)
 class BillView(AuthMixin, RetrieveUpdateDestroyResource):
     schema = BillSchema(strict=True)
     model = Bill
+
+    def has_access(self, instance):
+        return self.current_user in instance.participants

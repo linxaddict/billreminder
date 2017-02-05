@@ -100,16 +100,9 @@ class Reminder(SurrogatePK, Model):
     end = Column(db.DateTime, nullable=False)
 
 
-class Participant(SurrogatePK, Model):
-    __tablename__ = 'participants'
-
-    first_name = Column(db.String, nullable=False)
-    last_name = Column(db.String)
-
-
-participants_bills = db.Table(
-    'participants_bills',
-    db.Column('participant_id', db.Integer, db.ForeignKey('participants.id')),
+users_bills = db.Table(
+    'users_bills',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('bill_id', db.Integer, db.ForeignKey('bills.id'))
 )
 
@@ -122,5 +115,5 @@ class Bill(SurrogatePK, Model):
     amount = Column(db.Integer, nullable=False)
     last_payment = Column(db.DateTime)
 
-    participants = db.relationship('Participant', secondary=participants_bills,
+    participants = db.relationship('User', secondary=users_bills,
                                    backref=db.backref('participants', lazy='dynamic'))
