@@ -14,7 +14,7 @@ class RoleSchema(ma.ModelSchema):
 
 
 class UserSchema(ma.Schema):
-    id = fields.Integer(dump_only=True)
+    id = fields.Integer(load_only=True)
     email = fields.Email(required=True)
     password = fields.String(required=True, load_only=True)
     first_name = fields.String()
@@ -52,6 +52,10 @@ class ParticipantSchema(ma.ModelSchema):
         fields = ('id', 'first_name', 'last_name')
 
 
+class PaymentSchema(ma.Schema):
+    date = fields.DateTime(attribute='created_at', allow_none=False)
+
+
 class BillSchema(ModelSchema):
     class Meta:
         model = Bill
@@ -62,11 +66,9 @@ class BillSchema(ModelSchema):
     description = fields.String(required=True)
     amount = fields.Integer(required=True, validate=lambda n: n >= 0)
     last_payment = fields.DateTime(allow_none=True)
-    participants = ma.List(ma.Nested(ParticipantSchema))
-
-
-class PaymentSchema(ma.Schema):
-    date = fields.DateTime(attribute='created_at', allow_none=False)
+    participants = ma.List(ma.Nested(UserSchema))
+    payments = ma.List(ma.Nested(PaymentSchema))
+    owner = ma.Nested(UserSchema)
 
 
 class PaginationSchema(ma.Schema):

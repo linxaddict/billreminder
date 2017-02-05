@@ -102,16 +102,24 @@ class ListMixin(BaseApiMixin):
     DEFAULT_PAGE = 1
     ITEMS_PER_PAGE = 50
 
-    def retrieve(self, *args, **kwargs):
+    def execute_query(self, *args, **kwargs):
         try:
             page = int(request.args.get(self.QUERY_ARG_PAGE, self.DEFAULT_PAGE))
         except ValueError:
             page = self.DEFAULT_PAGE
 
-        bills = self.model.query.paginate(page, self.ITEMS_PER_PAGE)
+        if self.lookup_field:
+            filter_kwargs = {self.lookup_field: kwargs[self.lookup_field]}
+        else:
+            filter_kwargs = {}
+
+        return self.query.filter_by(**filter_kwargs).paginate(page, self.ITEMS_PER_PAGE)
+
+    def retrieve(self, *args, **kwargs):
+        entities = self.execute_query(*args, **kwargs)
         pagination_schema = create_paginated_list_schema(self.schema, strict=True)
 
-        return pagination_schema.dump(PaginatedList(bills)).data
+        return pagination_schema.dump(PaginatedList(entities)).data
 
 
 class BaseApiResource(Resource):
@@ -145,11 +153,15 @@ class RetrieveUpdateDestroyResource(RetrieveMixin, UpdateMixin, DestroyMixin, Ba
 
 
 class ListResource(ListMixin, BaseApiResource):
+    lookup_field = None
+
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
 
 
 class ListCreateResource(CreateMixin, ListMixin, BaseApiResource):
+    lookup_field = None
+
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
 

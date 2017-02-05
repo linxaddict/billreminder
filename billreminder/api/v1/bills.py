@@ -1,9 +1,12 @@
+from sqlalchemy import or_
+
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
-from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCreateResource, BaseApiResource
+from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCreateResource, BaseApiResource, \
+    ListResource
 from billreminder.extensions import api_v1, db
 from billreminder.http_status import HTTP_200_OK
-from billreminder.model.db import Bill, Payment
+from billreminder.model.db import Bill, Payment, User
 from billreminder.model.schemas import BillSchema, PaymentSchema
 
 __author__ = 'Marcin Przepiórkowski'
@@ -17,7 +20,13 @@ class BillsView(AuthMixin, ListCreateResource):
 
     def create_instance(self, instance):
         instance.participants.append(self.current_user)
+        instance.owner = self.current_user
+
         super().create_instance(instance)
+
+    @property
+    def query(self):
+        return super().query.filter(Bill.participants.any(User.id == self.current_user.id))
 
 
 @api_v1.resource('/bills/<int:id>', strict_slashes=False)
@@ -42,3 +51,10 @@ class PaymentView(AuthMixin, BaseApiResource):
         db.session.commit()
 
         return PaymentSchema().dump(payment).data, HTTP_200_OK
+
+
+@api_v1.resource('/bills/<int:bill_id>/history', strict_slashes=False)
+class PaymentHistory(AuthMixin, ListResource):
+    schema = PaymentSchema(strict=True)
+    model = Payment
+    lookup_field = 'bill_id'

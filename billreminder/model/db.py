@@ -38,7 +38,9 @@ class User(UserMixin, SurrogatePK, Model):
     active = Column(db.Boolean, default=True)
     is_admin = Column(db.Boolean, default=False)
     avatar = Column(db.String, nullable=True)
+
     payments = db.relationship('Payment', backref='user')
+    bills = db.relationship('Bill', backref='owner')
 
     def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
         db.Model.__init__(self, email=email, first_name=first_name, last_name=last_name, **kwargs)
@@ -113,6 +115,8 @@ class Bill(SurrogatePK, Model):
     description = Column(db.String, nullable=False)
     amount = Column(db.Integer, nullable=False)
     last_payment = Column(db.DateTime)
+
+    owner_id = Column(db.Integer, ForeignKey('users.id'))
     payments = db.relationship('Payment', backref='bill')
     participants = db.relationship('User', secondary=users_bills,
                                    backref=db.backref('participants', lazy='dynamic'))
