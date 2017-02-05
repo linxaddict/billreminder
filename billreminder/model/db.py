@@ -3,6 +3,8 @@ import datetime as dt
 from flask import current_app as app
 from flask_login import UserMixin
 from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSerializer as Serializer
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
 
 from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
 from billreminder.extensions import bcrypt
@@ -29,7 +31,6 @@ class User(UserMixin, SurrogatePK, Model):
     __tablename__ = 'users'
 
     email = Column(db.String, unique=True, nullable=False)
-    #: The hashed password
     password = Column(db.Binary, nullable=True)
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     first_name = Column(db.String, nullable=True)
@@ -37,9 +38,9 @@ class User(UserMixin, SurrogatePK, Model):
     active = Column(db.Boolean, default=True)
     is_admin = Column(db.Boolean, default=False)
     avatar = Column(db.String, nullable=True)
+    payments = db.relationship('Payment', backref='user')
 
     def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
-        """Create instance."""
         db.Model.__init__(self, email=email, first_name=first_name, last_name=last_name, **kwargs)
         if password:
             self.set_password(password)
@@ -47,11 +48,9 @@ class User(UserMixin, SurrogatePK, Model):
             self.password = None
 
     def set_password(self, password):
-        """Set password."""
         self.password = bcrypt.generate_password_hash(password)
 
     def check_password(self, value):
-        """Check password."""
         return bcrypt.check_password_hash(self.password, value)
 
     def generate_auth_token(self):
@@ -114,6 +113,18 @@ class Bill(SurrogatePK, Model):
     description = Column(db.String, nullable=False)
     amount = Column(db.Integer, nullable=False)
     last_payment = Column(db.DateTime)
-
+    payments = db.relationship('Payment', backref='bill')
     participants = db.relationship('User', secondary=users_bills,
                                    backref=db.backref('participants', lazy='dynamic'))
+
+
+class Payment(SurrogatePK, Model):
+    __tablename__ = 'payments'
+
+    user_id = Column(Integer, ForeignKey('users.id'))
+    bill_id = Column(Integer, ForeignKey('bills.id'))
+    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+
+    def __init__(self, user_id, bill_id, **kwargs):
+        self.user_id = user_id
+        self.bill_id = bill_id

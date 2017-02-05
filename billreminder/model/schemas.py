@@ -65,6 +65,10 @@ class BillSchema(ModelSchema):
     participants = ma.List(ma.Nested(ParticipantSchema))
 
 
+class PaymentSchema(ma.Schema):
+    date = fields.DateTime(attribute='created_at', allow_none=False)
+
+
 class PaginationSchema(ma.Schema):
     page = fields.Integer(dump_only=True)
     has_next = fields.Boolean(dump_only=True)
