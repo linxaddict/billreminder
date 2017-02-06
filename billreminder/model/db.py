@@ -41,6 +41,7 @@ class User(UserMixin, SurrogatePK, Model):
 
     payments = db.relationship('Payment', backref='user')
     bills = db.relationship('Bill', backref='owner')
+    reminders = db.relationship('Reminder', backref='owners')
 
     def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
         db.Model.__init__(self, email=email, first_name=first_name, last_name=last_name, **kwargs)
@@ -99,6 +100,7 @@ class Reminder(SurrogatePK, Model):
     value = Column(db.Integer, nullable=False)
     start = Column(db.DateTime, nullable=False)
     end = Column(db.DateTime, nullable=False)
+    owner_id = Column(db.Integer, ForeignKey('users.id'))
 
 
 users_bills = db.Table(
