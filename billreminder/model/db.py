@@ -6,7 +6,7 @@ from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSeriali
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 
-from billreminder.database import Column, Model, SurrogatePK, db, reference_col, relationship
+from billreminder.database import Column, Model, SurrogatePK, db
 from billreminder.extensions import bcrypt
 
 __author__ = 'Marcin Przepiórkowski'
@@ -17,8 +17,8 @@ class Role(SurrogatePK, Model):
     __tablename__ = 'roles'
 
     name = Column(db.String, unique=True, nullable=False)
-    user_id = reference_col('users', nullable=True)
-    user = relationship('User', backref='roles')
+    user_id = Column(db.Integer, ForeignKey('users.id'))
+    user = db.relationship('User', backref='roles')
 
     def __init__(self, name, **kwargs):
         db.Model.__init__(self, name=name, **kwargs)
@@ -41,7 +41,8 @@ class User(UserMixin, SurrogatePK, Model):
 
     payments = db.relationship('Payment', backref='user')
     bills = db.relationship('Bill', backref='owner')
-    reminders = db.relationship('Reminder', backref='owners')
+    reminders = db.relationship('Reminder', backref='owner')
+    reminder_dates = db.relationship('ReminderDate', backref='owner')
 
     def __init__(self, email, password=None, first_name=None, last_name=None, **kwargs):
         db.Model.__init__(self, email=email, first_name=first_name, last_name=last_name, **kwargs)
@@ -88,9 +89,10 @@ class User(UserMixin, SurrogatePK, Model):
 class ReminderDate(SurrogatePK, Model):
     __tablename__ = 'reminder_dates'
 
-    data = Column(db.DateTime, nullable=False)
-    reminder = relationship('Reminder', backref='dates')
-    reminder_id = reference_col('reminders', nullable=True)
+    date = Column(db.DateTime, nullable=False)
+    reminder = db.relationship('Reminder', backref=db.backref('dates', cascade='all, delete-orphan'))
+    reminder_id = Column(db.Integer, ForeignKey('reminders.id'))
+    owner_id = Column(db.Integer, ForeignKey('users.id'))
 
 
 class Reminder(SurrogatePK, Model):
@@ -101,6 +103,10 @@ class Reminder(SurrogatePK, Model):
     start = Column(db.DateTime, nullable=False)
     end = Column(db.DateTime, nullable=False)
     owner_id = Column(db.Integer, ForeignKey('users.id'))
+
+    @property
+    def visible_dates(self):
+        return [d for d in self.dates if d.owner_id == self.owner_id]
 
 
 users_bills = db.Table(

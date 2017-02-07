@@ -1,4 +1,6 @@
 from marshmallow import fields
+from marshmallow import post_dump
+from marshmallow import pre_load
 from marshmallow_sqlalchemy import ModelSchema
 
 from billreminder.extensions import ma, db
@@ -40,11 +42,30 @@ class TokenResponseSchema(ma.Schema):
 class ReminderDateSchema(ma.ModelSchema):
     class Meta:
         model = ReminderDate
+        sqla_session = db.session
+        fields = ('date',)
+
+    @pre_load
+    def wrap(self, reminder_date):
+        return {'date': reminder_date}
+
+    @post_dump
+    def unwrap(self, reminder_date):
+        return reminder_date['date']
 
 
 class ReminderSchema(ma.ModelSchema):
     class Meta:
         model = Reminder
+        sqla_session = db.session
+
+    id = fields.Integer(dump_only=True)
+    unit = fields.Integer(required=False)
+    value = fields.Integer(required=False)
+    start = fields.DateTime(required=False)
+    end = fields.DateTime(required=False)
+    dates = ma.List(ma.Nested(ReminderDateSchema), load_only=True)
+    visible_dates = ma.List(ma.Nested(ReminderDateSchema), dump_only=True, dump_to='dates')
 
 
 class ParticipantSchema(ma.ModelSchema):

@@ -15,6 +15,10 @@ class RemindersView(AuthMixin, ListCreateResource):
 
     def create_instance(self, instance):
         instance.owner = self.current_user
+
+        for date in instance.dates:
+            date.owner = self.current_user
+
         super().create_instance(instance)
 
     @property
