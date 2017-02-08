@@ -58,6 +58,7 @@ class ReminderSchema(ma.ModelSchema):
     class Meta:
         model = Reminder
         sqla_session = db.session
+        exclude = ('owner', 'owner_id')
 
     id = fields.Integer(dump_only=True)
     unit = fields.Integer(required=False)
