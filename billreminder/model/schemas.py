@@ -5,20 +5,16 @@ from marshmallow_sqlalchemy import ModelSchema
 
 from billreminder.extensions import ma, db
 from billreminder.model.db import Role, ReminderDate, Reminder, Bill
+from billreminder.validation.validators import PasswordValidator
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class RoleSchema(ma.ModelSchema):
-    class Meta:
-        model = Role
-
-
 class UserSchema(ma.Schema):
     id = fields.Integer(load_only=True)
     email = fields.Email(required=True)
-    password = fields.String(required=True, load_only=True)
+    password = fields.String(required=True, load_only=True, validate=PasswordValidator())
     first_name = fields.String()
     last_name = fields.String()
     avatar = fields.String()
@@ -32,7 +28,7 @@ class UserUpdateSchema(ma.Schema):
 
 class LoginSchema(ma.Schema):
     email = fields.Email(required=True)
-    password = fields.String(required=True)
+    password = fields.String(required=True, validate=PasswordValidator())
 
 
 class TokenResponseSchema(ma.Schema):
