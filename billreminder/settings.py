@@ -1,5 +1,7 @@
 import os
 
+DATE_FORMAT = '%Y-%m-%dT%H:%M:%S%z'
+
 
 class Config:
     """Base configuration."""

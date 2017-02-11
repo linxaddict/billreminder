@@ -69,3 +69,15 @@ class TestLoginSchema(TestCase):
 
         self.assertIsNotNone(errors)
         self.assertTrue('password' in errors)
+
+    def test_dump(self):
+        data = {
+            'email': 'test@gmail.com',
+            'password': 'abcd1234'
+        }
+
+        schema = LoginSchema()
+        dumped = schema.dump(data).data
+
+        self.assertEqual(data['email'], dumped['email'])
+        self.assertEqual(data['password'], dumped['password'])

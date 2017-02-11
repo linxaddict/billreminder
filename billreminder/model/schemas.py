@@ -4,7 +4,8 @@ from marshmallow import pre_load
 from marshmallow_sqlalchemy import ModelSchema
 
 from billreminder.extensions import ma, db
-from billreminder.model.db import Role, ReminderDate, Reminder, Bill
+from billreminder.model.db import ReminderDate, Reminder, Bill
+from billreminder.settings import DATE_FORMAT
 from billreminder.validation.validators import PasswordValidator
 
 __author__ = 'Marcin Przepiórkowski'
@@ -41,6 +42,8 @@ class ReminderDateSchema(ma.ModelSchema):
         sqla_session = db.session
         fields = ('date',)
 
+    date = fields.DateTime(format=DATE_FORMAT)
+
     @pre_load
     def wrap(self, reminder_date):
         return {'date': reminder_date}
@@ -59,19 +62,14 @@ class ReminderSchema(ma.ModelSchema):
     id = fields.Integer(dump_only=True)
     unit = fields.Integer(required=False)
     value = fields.Integer(required=False)
-    start = fields.DateTime(required=False)
-    end = fields.DateTime(required=False)
+    start = fields.DateTime(required=False, format=DATE_FORMAT)
+    end = fields.DateTime(required=False, format=DATE_FORMAT)
     dates = ma.List(ma.Nested(ReminderDateSchema), load_only=True)
     visible_dates = ma.List(ma.Nested(ReminderDateSchema), dump_only=True, dump_to='dates')
 
 
-class ParticipantSchema(ma.ModelSchema):
-    class Meta:
-        fields = ('id', 'first_name', 'last_name')
-
-
 class PaymentSchema(ma.Schema):
-    date = fields.DateTime(attribute='created_at', allow_none=False)
+    date = fields.DateTime(attribute='created_at', required=True, allow_none=False, format=DATE_FORMAT)
 
 
 class BillSchema(ModelSchema):
@@ -83,7 +81,7 @@ class BillSchema(ModelSchema):
     name = fields.String(required=True)
     description = fields.String(required=True)
     amount = fields.Integer(required=True, validate=lambda n: n >= 0)
-    last_payment = fields.DateTime(allow_none=True)
+    last_payment = fields.DateTime(allow_none=True, format=DATE_FORMAT)
     participants = ma.List(ma.Nested(UserSchema))
     payments = ma.List(ma.Nested(PaymentSchema))
     owner = ma.Nested(UserSchema)
