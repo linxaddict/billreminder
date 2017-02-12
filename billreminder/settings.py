@@ -43,6 +43,6 @@ class TestConfig(Config):
 
     TESTING = True
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5432/billreminder'  # TODO: Change me
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:postgres@localhost:5432/billreminder_test'  # TODO: Change me
     BCRYPT_LOG_ROUNDS = 4  # For faster tests; needs at least 4 to avoid "ValueError: Invalid rounds"
     WTF_CSRF_ENABLED = False  # Allows form testing

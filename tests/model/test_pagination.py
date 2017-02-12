@@ -6,11 +6,10 @@ from billreminder.model.pagination import Pagination, PaginatedList
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
-TestData = namedtuple('TestData', ['has_next', 'page', 'total', 'items'])
-
 
 class TestPagination(TestCase):
     def test_properties(self):
+        TestData = namedtuple('TestData', ['has_next', 'page', 'total', 'items'])
         data = TestData(has_next=True, page=1, total=12, items=[])
 
         pagination = Pagination(data)
@@ -22,6 +21,7 @@ class TestPagination(TestCase):
 
 class TestPaginatedList(TestCase):
     def test_properties(self):
+        TestData = namedtuple('TestData', ['has_next', 'page', 'total', 'items'])
         data = TestData(has_next=True, page=1, total=12, items=[1, 2, 3, 4])
         paginated_list = PaginatedList(data)
 
