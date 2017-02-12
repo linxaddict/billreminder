@@ -62,7 +62,7 @@ class ReminderSchema(ma.ModelSchema):
     id = fields.Integer(dump_only=True)
     unit = fields.Integer(required=False)
     value = fields.Integer(required=False)
-    start = fields.DateTime(required=False, format=DATE_FORMAT)
+    start = fields.DateTime(required=True, format=DATE_FORMAT)
     end = fields.DateTime(required=False, format=DATE_FORMAT)
     dates = ma.List(ma.Nested(ReminderDateSchema), load_only=True)
     visible_dates = ma.List(ma.Nested(ReminderDateSchema), dump_only=True, dump_to='dates')
