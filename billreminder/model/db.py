@@ -81,6 +81,10 @@ class User(UserMixin, SurrogatePK, Model):
         """Full user name."""
         return '{0} {1}'.format(self.first_name, self.last_name)
 
+    @staticmethod
+    def get_by_email(email):
+        return db.session.query(User).filter(User.email == email).one_or_none()
+
     def __repr__(self):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
