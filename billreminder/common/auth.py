@@ -2,6 +2,7 @@ from functools import wraps
 
 from flask import request
 
+from billreminder.common.errors import ApiErrors
 from billreminder.http_status import HTTP_401_UNAUTHORIZED
 from billreminder.model.db import User
 
@@ -14,11 +15,11 @@ def auth_required(func):
     def with_auth(*args, **kwargs):
         auth_token = request.headers.get(AuthMixin.AUTH_TOKEN_HEADER, None)
         if not auth_token:
-            return HTTP_401_UNAUTHORIZED
+            return ApiErrors.UNAUTHORIZED.value
 
         user = User.verify_auth_token(auth_token)
         if not user:
-            return HTTP_401_UNAUTHORIZED
+            return ApiErrors.UNAUTHORIZED.value
 
         return func(*args, **kwargs)
     return with_auth

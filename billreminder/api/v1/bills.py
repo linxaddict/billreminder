@@ -39,14 +39,17 @@ class BillView(AuthMixin, RetrieveUpdateDestroyResource):
 @api_v1.resource('/bills/<int:id>/pay', strict_slashes=False)
 class PaymentView(AuthMixin, BaseApiResource):
     def has_access(self, instance):
+        if not instance:
+            return True
+
         return self.current_user in instance.participants
 
     def post(self, id):
-        bill = Bill.query.filter(Bill.id == id)
+        bill = Bill.query.filter(Bill.id == id).one_or_none()
         if not bill:
             return ApiErrors.BILL_NOT_FOUND.value
 
-        if not self.has_access(bill.first()):
+        if not self.has_access(bill):
             return ApiErrors.ACCESS_DENIED.value
 
         payment = Payment(user_id=self.current_user.id, bill_id=id)
@@ -67,6 +70,10 @@ class PaymentHistory(AuthMixin, ListResource):
         bill = Bill.query.filter(Bill.id == kwargs['bill_id'])\
             .filter(Bill.owner_id == self.current_user.id).one_or_none()
         if not bill:
-            return ApiErrors.ACCESS_DENIED.value
+            b = Bill.query.filter(Bill.id == kwargs['bill_id']).one_or_none()
+            if not b:
+                return ApiErrors.BILL_NOT_FOUND.value
+            else:
+                return ApiErrors.ACCESS_DENIED.value
 
         return super().get(*args, **kwargs)

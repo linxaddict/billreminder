@@ -51,7 +51,7 @@ class DestroyMixin(BaseApiMixin):
 
         self.delete_instance(entity)
 
-        return HTTP_204_NO_CONTENT
+        return '', HTTP_204_NO_CONTENT
 
 
 class UpdateMixin(BaseApiMixin):

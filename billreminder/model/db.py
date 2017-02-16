@@ -125,7 +125,7 @@ class Bill(SurrogatePK, Model):
 
     name = Column(db.String, nullable=False)
     description = Column(db.String, nullable=False)
-    amount = Column(db.Integer, nullable=False)
+    amount = Column(db.Float, nullable=False)
     last_payment = Column(db.DateTime)
 
     owner_id = Column(db.Integer, ForeignKey('users.id'))
