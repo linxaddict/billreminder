@@ -27,9 +27,12 @@ class UserView(AuthMixin, BaseApiResource):
     def put(self):
         json_data = request.get_json()
 
-        allowed_fields = ('email', 'first_name', 'last_name')
+        allowed_fields = ('first_name', 'last_name')
         for k in [f for f in json_data if f not in allowed_fields]:
             json_data.pop(k, None)
+
+        if not json_data:
+            return ApiErrors.NO_INPUT_DATA.value
 
         errors = self.update_schema.validate(json_data)
         if errors:

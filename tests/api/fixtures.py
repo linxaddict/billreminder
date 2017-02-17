@@ -1,5 +1,5 @@
 from billreminder.extensions import db
-from billreminder.model.db import User, Bill, Payment
+from billreminder.model.db import User, Bill, Payment, Reminder
 import datetime as dt
 
 __author__ = 'Marcin Przepiórkowski'
@@ -61,3 +61,29 @@ def payment(user_id=1, bill_id=1):
         user_id=user_id,
         bill_id=bill_id
     )
+
+
+# noinspection PyDefaultArgument
+def reminder(owner, dates=['2017-02-13T11:01:59.333901+00:00'], unit=12, value=23,
+             start='2017-02-13T11:01:59.333901+00:00', end='2017-02-14T11:01:59.333901+00:00'):
+    return Reminder.create(
+        owner_id=owner.id,
+        unit=unit,
+        value=value,
+        start=start,
+        end=end,
+        dates=dates
+    )
+
+
+# noinspection PyDefaultArgument
+def reminder_dict(owner, dates=['2017-02-13T11:01:59.333901+00:00'], unit=12, value=23,
+                  start='2017-02-13T11:01:59.333901+00:00', end='2017-02-14T11:01:59.333901+00:00'):
+    return {
+        'owner_id': owner.id,
+        'unit': unit,
+        'value': value,
+        'start': start,
+        'end': end,
+        'dates': dates
+    }
