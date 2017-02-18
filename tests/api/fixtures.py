@@ -1,6 +1,8 @@
-from billreminder.extensions import db
-from billreminder.model.db import User, Bill, Payment, Reminder, ReminderDate
 import datetime as dt
+
+from billreminder.api.v1.auth.models import User
+from billreminder.extensions import db
+from billreminder.model.db import Bill, Payment, Reminder, ReminderDate
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

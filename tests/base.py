@@ -2,8 +2,8 @@ import json
 
 from flask_testing import TestCase
 
+from billreminder.api.v1.auth.models import User
 from billreminder.extensions import db
-from billreminder.model.db import User
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

@@ -1,10 +1,11 @@
+from billreminder.api.v1.auth.models import User
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCreateResource, BaseApiResource, \
     ListResource
 from billreminder.extensions import api_v1, db
 from billreminder.http_status import HTTP_200_OK
-from billreminder.model.db import Bill, Payment, User
+from billreminder.model.db import Bill, Payment
 from billreminder.model.schemas import BillSchema, PaymentSchema
 
 __author__ = 'Marcin Przepiórkowski'
