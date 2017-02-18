@@ -5,7 +5,7 @@ import pytz
 import tests.api.fixtures as f
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, \
-    HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
+    HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN
 from billreminder.model.db import Reminder
 from billreminder.model.schemas import ReminderSchema
 from billreminder.settings import DATE_FORMAT
@@ -133,6 +133,15 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
 
         self.assertStatus(response, HTTP_401_UNAUTHORIZED)
 
+    def test_fetch_access_denied(self):
+        user = f.user()
+        reminder = f.reminder(owner=user)
+        url = self.url.format(id=reminder.id)
+
+        response = self.client.get(url, content_type=self.json_content_type, headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)
+
     def test_update(self):
         reminder = f.reminder(self.current_user)
         reminder_dict = f.reminder_dict(self.current_user, unit=14, value=15,
@@ -217,6 +226,16 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
 
         self.assertStatus(response, HTTP_401_UNAUTHORIZED)
 
+    def test_update_access_denied(self):
+        user = f.user()
+        reminder = f.reminder(owner=user)
+        url = self.url.format(id=reminder.id)
+
+        response = self.client.put(url, data=json.dumps({}), content_type=self.json_content_type,
+                                   headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)
+
     def test_delete(self):
         reminder = f.reminder(self.current_user)
         url = self.url.format(id=reminder.id)
@@ -227,14 +246,23 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
         self.assertStatus(response, HTTP_204_NO_CONTENT)
         self.assertIsNone(deleted_reminder)
 
-    def test_reminder_invalid_id(self):
+    def test_delete_invalid_id(self):
         url = self.url.format(id=1)
         response = self.client.delete(url, content_type=self.json_content_type, headers=self.auth_header)
 
         self.assertStatus(response, HTTP_404_NOT_FOUND)
 
-    def test_reminder_unauthorized(self):
+    def test_delete_unauthorized(self):
         url = self.url.format(id=1)
         response = self.client.delete(url, content_type=self.json_content_type)
 
         self.assertStatus(response, HTTP_401_UNAUTHORIZED)
+
+    def test_delete_access_denied(self):
+        user = f.user()
+        reminder = f.reminder(owner=user)
+        url = self.url.format(id=reminder.id)
+
+        response = self.client.delete(url, content_type=self.json_content_type, headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)

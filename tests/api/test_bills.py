@@ -112,6 +112,15 @@ class BillViewTest(ViewTestMixin, BaseTest):
         self.assertStatus(response, HTTP_200_OK)
         self.assertEqual(BillSchema().dump(bill).data, response.json)
 
+    def test_fetch_access_denied(self):
+        user = f.user()
+        bill = f.bill(user)
+        url = self.url.format(id=bill.id)
+
+        response = self.client.get(url, content_type=self.json_content_type, headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)
+
     def test_fetch_invalid_id(self):
         url = self.url.format(id=42)
         response = self.client.get(url, content_type=self.json_content_type, headers=self.auth_header)
@@ -142,6 +151,16 @@ class BillViewTest(ViewTestMixin, BaseTest):
         self.assertEqual(update_dict['name'], updated_bill.name)
         self.assertEqual(update_dict['description'], updated_bill.description)
         self.assertEqual(update_dict['amount'], updated_bill.amount)
+
+    def test_update_access_denied(self):
+        user = f.user()
+        bill = f.bill(owner=user)
+        url = self.url.format(id=bill.id)
+
+        response = self.client.put(url, data=json.dumps({}), content_type=self.json_content_type,
+                                   headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)
 
     def test_update_no_input_data(self):
         bill = f.bill(owner=self.current_user)
@@ -183,12 +202,20 @@ class BillViewTest(ViewTestMixin, BaseTest):
 
         self.assertStatus(response, HTTP_404_NOT_FOUND)
 
-    def test_unauthorized(self):
-        self.token = None
+    def test_delete_unauthorized(self):
         url = self.url.format(id=1)
-        response = self.client.delete(url, content_type=self.json_content_type, headers=self.auth_header)
+        response = self.client.delete(url, content_type=self.json_content_type)
 
         self.assertStatus(response, HTTP_401_UNAUTHORIZED)
+
+    def test_delete_access_denied(self):
+        user = f.user()
+        bill = f.bill(owner=user)
+        url = self.url.format(id=bill.id)
+
+        response = self.client.delete(url, content_type=self.json_content_type, headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_403_FORBIDDEN)
 
 
 class PaymentViewTest(ViewTestMixin, BaseTest):
