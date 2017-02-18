@@ -125,6 +125,42 @@ class TestReminderSchema(TestCase):
 
         self.assertTrue('start' in errors)
 
+    def test_load_start_after_end(self):
+        data = {
+            'unit': 1,
+            'value': 12,
+            'start': '2017-02-06T19:47:32+0100',
+            'end': '2017-02-06T18:47:32+0100',
+            'dates': [
+                '2017-02-06T17:47:32+0100',
+                '2017-02-06T18:47:32+0100'
+            ]
+        }
+
+        schema = ReminderSchema()
+        loaded, errors = schema.load(data)
+
+        self.assertTrue('start' in errors)
+        self.assertTrue('end' in errors)
+
+    def test_load_start_equals_to_end(self):
+        data = {
+            'unit': 1,
+            'value': 12,
+            'start': '2017-02-06T18:47:32+0100',
+            'end': '2017-02-06T18:47:32+0100',
+            'dates': [
+                '2017-02-06T17:47:32+0100',
+                '2017-02-06T18:47:32+0100'
+            ]
+        }
+
+        schema = ReminderSchema()
+        loaded, errors = schema.load(data)
+
+        self.assertTrue('start' in errors)
+        self.assertTrue('end' in errors)
+
     def test_dump(self):
         reminder_date_0 = ReminderDate()
         reminder_date_0.date = datetime.datetime.strptime('2017-02-06T17:47:32+0100', DATE_FORMAT)

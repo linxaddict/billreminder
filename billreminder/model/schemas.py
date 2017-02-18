@@ -1,6 +1,8 @@
+from marshmallow import ValidationError
 from marshmallow import fields
 from marshmallow import post_dump
 from marshmallow import pre_load
+from marshmallow import validates_schema
 from marshmallow_sqlalchemy import ModelSchema
 
 from billreminder.extensions import ma, db
@@ -66,6 +68,11 @@ class ReminderSchema(ma.ModelSchema):
     end = fields.DateTime(required=False, format=DATE_FORMAT)
     dates = ma.List(ma.Nested(ReminderDateSchema), load_only=True)
     visible_dates = ma.List(ma.Nested(ReminderDateSchema), dump_only=True, dump_to='dates')
+
+    @validates_schema
+    def validate_dates(self, data):
+        if 'start' in data and 'end' in data and data['start'] >= data['end']:
+            raise ValidationError(field_names=['start', 'end'], message='Start date must be before end date')
 
 
 class PaymentSchema(ma.Schema):

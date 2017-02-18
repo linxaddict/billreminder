@@ -17,6 +17,15 @@ class RemindersView(AuthMixin, ListCreateResource):
     def create_instance(self, instance):
         instance.owner = self.current_user
 
+        added_dates = set()
+        unique_dates = []
+
+        for d in instance.dates:
+            if d.date not in added_dates:
+                added_dates.add(d.date)
+                unique_dates.append(d)
+        instance.dates = unique_dates
+
         for date in instance.dates:
             date.owner = self.current_user
 
@@ -35,11 +44,18 @@ class ResourceView(AuthMixin, RetrieveUpdateDestroyResource):
     def update_instance(self, instance, json_data):
         update_schema = ReminderSchema(exclude=('id', 'visible_dates'))
 
-        loaded, errors = self.schema.load(json_data)
+        loaded, errors = self.schema.load(json_data, instance=instance)
         if errors:
             return errors, HTTP_400_BAD_REQUEST
 
-        new_dates = loaded.dates
+        added_dates = set()
+        new_dates = []
+
+        for d in loaded.dates:
+            if d.date not in added_dates:
+                added_dates.add(d.date)
+                new_dates.append(d)
+
         for d in new_dates:
             d.owner = self.current_user
 

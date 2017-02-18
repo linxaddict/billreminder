@@ -32,7 +32,7 @@ class User(UserMixin, SurrogatePK, Model):
 
     email = Column(db.String, unique=True, nullable=False)
     password = Column(db.Binary, nullable=True)
-    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    created_at = Column(db.DateTime(timezone=True), nullable=False, default=dt.datetime.utcnow)
     first_name = Column(db.String, nullable=True)
     last_name = Column(db.String, nullable=True)
     active = Column(db.Boolean, default=True)
@@ -93,7 +93,7 @@ class User(UserMixin, SurrogatePK, Model):
 class ReminderDate(SurrogatePK, Model):
     __tablename__ = 'reminder_dates'
 
-    date = Column(db.DateTime, nullable=False)
+    date = Column(db.DateTime(timezone=True), nullable=False)
     reminder = db.relationship('Reminder', backref=db.backref('dates', cascade='all, delete-orphan'))
     reminder_id = Column(db.Integer, ForeignKey('reminders.id'))
     owner_id = Column(db.Integer, ForeignKey('users.id'))
@@ -104,8 +104,8 @@ class Reminder(SurrogatePK, Model):
 
     unit = Column(db.Integer, nullable=False)
     value = Column(db.Integer, nullable=False)
-    start = Column(db.DateTime, nullable=False)
-    end = Column(db.DateTime, nullable=False)
+    start = Column(db.DateTime(timezone=True), nullable=False)
+    end = Column(db.DateTime(timezone=True), nullable=False)
     owner_id = Column(db.Integer, ForeignKey('users.id'))
 
     @property
@@ -126,7 +126,7 @@ class Bill(SurrogatePK, Model):
     name = Column(db.String, nullable=False)
     description = Column(db.String, nullable=False)
     amount = Column(db.Float, nullable=False)
-    last_payment = Column(db.DateTime)
+    last_payment = Column(db.DateTime(timezone=True))
 
     owner_id = Column(db.Integer, ForeignKey('users.id'))
     payments = db.relationship('Payment', backref='bill')
@@ -139,7 +139,7 @@ class Payment(SurrogatePK, Model):
 
     user_id = Column(Integer, ForeignKey('users.id'))
     bill_id = Column(Integer, ForeignKey('bills.id'))
-    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    created_at = Column(db.DateTime(timezone=True), nullable=False, default=dt.datetime.utcnow)
 
     def __init__(self, user_id, bill_id, **kwargs):
         self.user_id = user_id
