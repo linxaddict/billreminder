@@ -3,11 +3,10 @@ from flask_restful import Resource
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from billreminder.common.errors import ApiErrors
+from billreminder.common.pagination import PaginatedList, create_paginated_list_schema
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT, \
     HTTP_201_CREATED
-from billreminder.model.pagination import PaginatedList
-from billreminder.model.schemas import create_paginated_list_schema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

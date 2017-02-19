@@ -1,9 +1,9 @@
 from billreminder.api.v1.reminders.models import Reminder
+from billreminder.api.v1.reminders.schemas import ReminderSchema
 from billreminder.common.auth import AuthMixin
 from billreminder.common.resources import ListCreateResource, RetrieveUpdateDestroyResource
 from billreminder.extensions import api_v1
 from billreminder.http_status import HTTP_400_BAD_REQUEST
-from billreminder.model.schemas import ReminderSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

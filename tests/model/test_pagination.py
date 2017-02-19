@@ -1,7 +1,7 @@
 from collections import namedtuple
 from unittest import TestCase
 
-from billreminder.model.pagination import Pagination, PaginatedList
+from billreminder.common.pagination import Pagination, PaginatedList
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

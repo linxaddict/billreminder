@@ -2,7 +2,7 @@ import datetime
 from unittest import TestCase
 
 from billreminder.api.v1.reminders.models import ReminderDate
-from billreminder.model.schemas import ReminderDateSchema
+from billreminder.api.v1.reminders.schemas import ReminderDateSchema
 from billreminder.settings import DATE_FORMAT
 
 __author__ = 'Marcin Przepiórkowski'

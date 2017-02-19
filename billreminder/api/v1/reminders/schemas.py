@@ -48,16 +48,3 @@ class ReminderSchema(ma.ModelSchema):
         if 'start' in data and 'end' in data and data['start'] >= data['end']:
             raise ValidationError(field_names=['start', 'end'], message='Start date must be before end date')
 
-
-class PaginationSchema(ma.Schema):
-    page = fields.Integer(dump_only=True)
-    has_next = fields.Boolean(dump_only=True)
-    total = fields.Integer(dump_to='total_items', dump_only=True)
-
-
-def create_paginated_list_schema(nested_schema, **kwargs):
-    class PaginatedListSchema(ma.Schema):
-        pagination = fields.Nested(PaginationSchema, dump_only=True)
-        items = fields.Nested(nested_schema, many=True, dump_only=True)
-
-    return PaginatedListSchema(**kwargs)

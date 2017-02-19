@@ -86,3 +86,12 @@ class User(UserMixin, SurrogatePK, Model):
     def __repr__(self):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
+
+
+class TokenResponse:
+    def __init__(self, token):
+        self._token = token
+
+    @property
+    def token(self):
+        return self._token
