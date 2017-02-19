@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from billreminder.model.schemas import UserSchema
+from billreminder.api.v1.auth.schemas import UserSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

@@ -5,6 +5,7 @@ from marshmallow import pre_load
 from marshmallow import validates_schema
 from marshmallow_sqlalchemy import ModelSchema
 
+from billreminder.api.v1.auth.schemas import UserSchema
 from billreminder.extensions import ma, db
 from billreminder.model.db import ReminderDate, Reminder, Bill
 from billreminder.settings import DATE_FORMAT
@@ -14,13 +15,13 @@ __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class UserSchema(ma.Schema):
-    id = fields.Integer(load_only=True)
-    email = fields.Email(required=True)
-    password = fields.String(required=True, load_only=True, validate=PasswordValidator())
-    first_name = fields.String()
-    last_name = fields.String()
-    avatar = fields.String()
+# class UserSchema(ma.Schema):
+#     id = fields.Integer(load_only=True)
+#     email = fields.Email(required=True)
+#     password = fields.String(required=True, load_only=True, validate=PasswordValidator())
+#     first_name = fields.String()
+#     last_name = fields.String()
+#     avatar = fields.String()
 
 
 class UserUpdateSchema(ma.Schema):
