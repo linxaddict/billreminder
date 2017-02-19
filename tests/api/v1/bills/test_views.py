@@ -1,6 +1,6 @@
 import json
 
-from billreminder.api.v1.bills.models import Bill, Payment
+from billreminder.api.v1.models import *
 from billreminder.api.v1.bills.schemas import PaymentSchema, BillSchema
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, \

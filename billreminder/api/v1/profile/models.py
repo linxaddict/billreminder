@@ -3,8 +3,8 @@ import datetime as dt
 from flask import current_app as app
 from flask_login import UserMixin
 from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSerializer as Serializer
+from sqlalchemy import ForeignKey
 
-from billreminder.api.v1.reminders.models import *
 from billreminder.extensions import bcrypt
 from billreminder.database import Column, Model, SurrogatePK, db
 
@@ -71,7 +71,7 @@ class User(UserMixin, SurrogatePK, Model):
         return s.dumps({'id': self.id})
 
     def befriend(self, user):
-        if user not in self.friends:
+        if user.id != self.id and user not in self.friends:
             self.friends.append(user)
             user.friends.append(self)
 
