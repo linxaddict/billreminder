@@ -25,3 +25,7 @@ class UserUpdateSchema(ma.Schema):
 class LoginSchema(ma.Schema):
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=PasswordValidator())
+
+
+class TokenResponseSchema(ma.Schema):
+    token = fields.String(required=True)

@@ -14,10 +14,6 @@ __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class TokenResponseSchema(ma.Schema):
-    token = fields.String(required=True)
-
-
 class ReminderDateSchema(ma.ModelSchema):
     class Meta:
         model = ReminderDate

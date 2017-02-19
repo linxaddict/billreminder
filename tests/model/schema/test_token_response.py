@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from billreminder.model.schemas import TokenResponseSchema
+from billreminder.api.v1.auth.schemas import TokenResponseSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
