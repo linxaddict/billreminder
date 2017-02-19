@@ -1,8 +1,8 @@
 from marshmallow import fields
 from marshmallow_sqlalchemy import ModelSchema
 
-from billreminder.api.v1.auth.schemas import UserSchema
 from billreminder.api.v1.bills.models import Bill
+from billreminder.api.v1.profile.schemas import UserSchema
 from billreminder.extensions import ma, db
 from billreminder.settings import DATE_FORMAT
 

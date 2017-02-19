@@ -5,7 +5,7 @@ from flask import json
 from flask import request, jsonify, current_app as app
 from flask import send_from_directory
 
-from billreminder.api.v1.auth.schemas import UserSchema, UserUpdateSchema
+from billreminder.api.v1.profile.schemas import UserSchema, UserUpdateSchema
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import BaseApiResource

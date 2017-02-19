@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import request
 
-from billreminder.api.v1.auth.models import User
+from billreminder.api.v1.profile.models import User
 from billreminder.common.errors import ApiErrors
 from billreminder.http_status import HTTP_401_UNAUTHORIZED
 

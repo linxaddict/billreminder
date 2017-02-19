@@ -1,8 +1,10 @@
 from flask import request, jsonify
 from flask_restful import Resource
 
-from billreminder.api.v1.auth.models import User, TokenResponse
-from billreminder.api.v1.auth.schemas import UserSchema, LoginSchema, TokenResponseSchema
+from billreminder.api.v1.auth.models import TokenResponse
+from billreminder.api.v1.auth.schemas import LoginSchema, TokenResponseSchema
+from billreminder.api.v1.profile.models import User
+from billreminder.api.v1.profile.schemas import UserSchema
 from billreminder.common.errors import ApiErrors
 from billreminder.extensions import api_v1
 from billreminder.extensions import db

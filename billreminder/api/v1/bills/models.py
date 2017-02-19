@@ -3,7 +3,7 @@ import datetime as dt
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 
-from billreminder.api.v1.auth.models import User
+from billreminder.api.v1.profile.models import User
 from billreminder.database import Column, Model, SurrogatePK, db
 
 __author__ = 'Marcin Przepiórkowski'

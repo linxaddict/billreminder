@@ -1,6 +1,6 @@
-from billreminder.api.v1.auth.models import User
 from billreminder.api.v1.bills.models import Bill, Payment
 from billreminder.api.v1.bills.schemas import PaymentSchema, BillSchema
+from billreminder.api.v1.profile.models import User
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCreateResource, BaseApiResource, \

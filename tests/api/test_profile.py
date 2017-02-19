@@ -1,6 +1,6 @@
 import json
 
-from billreminder.api.v1.auth.schemas import UserSchema
+from billreminder.api.v1.profile.schemas import UserSchema
 from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST
 from tests.base import ViewTestMixin, BaseTest
 import tests.api.fixtures as f
