@@ -5,13 +5,12 @@ from flask import json
 from flask import request, jsonify, current_app as app
 from flask import send_from_directory
 
-from billreminder.api.v1.auth.schemas import UserSchema
+from billreminder.api.v1.auth.schemas import UserSchema, UserUpdateSchema
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import BaseApiResource
 from billreminder.extensions import api_v1
 from billreminder.http_status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from billreminder.model.schemas import UserUpdateSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

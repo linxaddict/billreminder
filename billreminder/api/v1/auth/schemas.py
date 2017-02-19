@@ -14,3 +14,9 @@ class UserSchema(ma.Schema):
     first_name = fields.String()
     last_name = fields.String()
     avatar = fields.String()
+
+
+class UserUpdateSchema(ma.Schema):
+    email = fields.Email()
+    first_name = fields.String()
+    last_name = fields.String()
