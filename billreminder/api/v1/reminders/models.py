@@ -1,7 +1,4 @@
-import datetime as dt
-
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
 
 from billreminder.database import Column, Model, SurrogatePK, db
 

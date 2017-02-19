@@ -1,7 +1,7 @@
 import datetime
 from unittest import TestCase
 
-from billreminder.model.db import Reminder, ReminderDate
+from billreminder.api.v1.reminders.models import Reminder, ReminderDate
 from billreminder.model.schemas import ReminderSchema
 from billreminder.settings import DATE_FORMAT
 

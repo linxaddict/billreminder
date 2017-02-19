@@ -3,13 +3,9 @@ from marshmallow import fields
 from marshmallow import post_dump
 from marshmallow import pre_load
 from marshmallow import validates_schema
-from marshmallow_sqlalchemy import ModelSchema
 
-from billreminder.api.v1.auth.schemas import UserSchema
-from billreminder.api.v1.bills.models import Bill
-from billreminder.api.v1.bills.schemas import PaymentSchema
+from billreminder.api.v1.reminders.models import ReminderDate, Reminder
 from billreminder.extensions import ma, db
-from billreminder.model.db import ReminderDate, Reminder
 from billreminder.settings import DATE_FORMAT
 
 __author__ = 'Marcin Przepiórkowski'

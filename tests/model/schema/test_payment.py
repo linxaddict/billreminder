@@ -1,7 +1,7 @@
 import datetime
 from unittest import TestCase
 
-from billreminder.model.schemas import PaymentSchema
+from billreminder.api.v1.bills.schemas import PaymentSchema
 from billreminder.settings import DATE_FORMAT
 
 __author__ = 'Marcin Przepiórkowski'

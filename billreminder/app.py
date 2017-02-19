@@ -7,9 +7,7 @@ from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from billreminder.settings import ProdConfig
 
-from billreminder.api.v1 import *
-from billreminder.api.v1.auth import *
-from billreminder.api.v1.bills import *
+from billreminder.api.v1 import views
 
 
 def create_app(config_object=ProdConfig):

@@ -3,12 +3,9 @@ import datetime as dt
 from flask import current_app as app
 from flask_login import UserMixin
 from itsdangerous import SignatureExpired, BadSignature, JSONWebSignatureSerializer as Serializer
-from sqlalchemy import ForeignKey
 
-from billreminder.database import Column, Model, SurrogatePK, db
+from billreminder.api.v1.reminders.models import *
 from billreminder.extensions import bcrypt
-
-from billreminder.model.db import *
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

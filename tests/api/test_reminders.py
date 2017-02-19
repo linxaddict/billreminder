@@ -3,10 +3,10 @@ import json
 import pytz
 
 import tests.api.fixtures as f
+from billreminder.api.v1.reminders.models import Reminder
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, \
     HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN
-from billreminder.model.db import Reminder
 from billreminder.model.schemas import ReminderSchema
 from billreminder.settings import DATE_FORMAT
 from tests.base import BaseTest, ViewTestMixin
