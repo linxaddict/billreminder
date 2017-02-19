@@ -9,6 +9,7 @@ from billreminder.settings import ProdConfig
 
 from billreminder.api.v1 import *
 from billreminder.api.v1.auth import *
+from billreminder.api.v1.bills import *
 
 
 def create_app(config_object=ProdConfig):
