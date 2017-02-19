@@ -2,7 +2,7 @@ import json
 
 import pytz
 
-import tests.api.fixtures as f
+import tests.api.v1.reminders.fixtures as f
 from billreminder.api.v1.reminders.models import Reminder
 from billreminder.api.v1.reminders.schemas import ReminderSchema
 from billreminder.extensions import db

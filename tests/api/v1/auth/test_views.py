@@ -1,6 +1,6 @@
 import json
 
-import tests.api.fixtures as f
+import tests.api.v1.auth.fixtures as f
 from billreminder.api.v1.profile.models import User
 from billreminder.http_status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_409_CONFLICT, HTTP_200_OK, \
     HTTP_401_UNAUTHORIZED
