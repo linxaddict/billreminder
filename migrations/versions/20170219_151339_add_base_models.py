@@ -1,8 +1,8 @@
-"""empty message
+"""Add base models
 
-Revision ID: b50b2cd8a70d
-Revises: 25052b33470c
-Create Date: 2017-02-16 22:27:12.042606
+Revision ID: d781de3d721a
+Revises: 
+Create Date: 2017-02-19 15:13:39.906061
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b50b2cd8a70d'
-down_revision = '25052b33470c'
+revision = 'd781de3d721a'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -22,7 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('password', sa.Binary(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.Column('first_name', sa.String(), nullable=True),
     sa.Column('last_name', sa.String(), nullable=True),
     sa.Column('active', sa.Boolean(), nullable=True),
@@ -35,8 +35,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('description', sa.String(), nullable=False),
-    sa.Column('amount', sa.Integer(), nullable=False),
-    sa.Column('last_payment', sa.DateTime(), nullable=True),
+    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('last_payment', sa.DateTime(timezone=True), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -45,8 +45,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('unit', sa.Integer(), nullable=False),
     sa.Column('value', sa.Integer(), nullable=False),
-    sa.Column('start', sa.DateTime(), nullable=False),
-    sa.Column('end', sa.DateTime(), nullable=False),
+    sa.Column('start', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('end', sa.DateTime(timezone=True), nullable=False),
     sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -63,14 +63,14 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('bill_id', sa.Integer(), nullable=True),
-    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('created_at', sa.DateTime(timezone=True), nullable=False),
     sa.ForeignKeyConstraint(['bill_id'], ['bills.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('reminder_dates',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=False),
+    sa.Column('date', sa.DateTime(timezone=True), nullable=False),
     sa.Column('reminder_id', sa.Integer(), nullable=True),
     sa.Column('owner_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], ),
