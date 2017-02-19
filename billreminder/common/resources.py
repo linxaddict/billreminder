@@ -158,7 +158,7 @@ class ListResource(ListMixin, BaseApiResource):
         return self.retrieve(*args, **kwargs)
 
 
-class ListCreateResource(CreateMixin, ListMixin, BaseApiResource):
+class   ListCreateResource(CreateMixin, ListMixin, BaseApiResource):
     lookup_field = None
 
     def get(self, *args, **kwargs):
