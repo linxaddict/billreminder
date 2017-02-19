@@ -2,14 +2,14 @@ from flask import request, jsonify
 from flask_restful import Resource
 
 from billreminder.api.v1.auth.models import User
-from billreminder.api.v1.auth.schemas import UserSchema
+from billreminder.api.v1.auth.schemas import UserSchema, LoginSchema
 from billreminder.common.errors import ApiErrors
 from billreminder.extensions import api_v1
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED, \
     HTTP_200_OK
 from billreminder.model.auth import TokenResponse
-from billreminder.model.schemas import LoginSchema, TokenResponseSchema
+from billreminder.model.schemas import TokenResponseSchema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

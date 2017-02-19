@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from billreminder.model.schemas import PaginationSchema, LoginSchema, create_paginated_list_schema
+from billreminder.api.v1.auth.schemas import LoginSchema
+from billreminder.model.schemas import PaginationSchema, create_paginated_list_schema
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

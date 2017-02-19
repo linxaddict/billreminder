@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from billreminder.model.schemas import LoginSchema
+from billreminder.api.v1.auth.schemas import LoginSchema
 
 
 __author__ = 'Marcin Przepiórkowski'

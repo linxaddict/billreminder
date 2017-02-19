@@ -9,21 +9,9 @@ from billreminder.api.v1.auth.schemas import UserSchema
 from billreminder.extensions import ma, db
 from billreminder.model.db import ReminderDate, Reminder, Bill
 from billreminder.settings import DATE_FORMAT
-from billreminder.validation.validators import PasswordValidator
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
-
-
-# class UserUpdateSchema(ma.Schema):
-#     email = fields.Email()
-#     first_name = fields.String()
-#     last_name = fields.String()
-
-
-class LoginSchema(ma.Schema):
-    email = fields.Email(required=True)
-    password = fields.String(required=True, validate=PasswordValidator())
 
 
 class TokenResponseSchema(ma.Schema):
