@@ -8,6 +8,8 @@ from sqlalchemy import ForeignKey
 from billreminder.database import Column, Model, SurrogatePK, db
 from billreminder.extensions import bcrypt
 
+from billreminder.model.db import *
+
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 

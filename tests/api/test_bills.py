@@ -1,10 +1,10 @@
 import json
 
 from billreminder.api.v1.bills.models import Bill, Payment
+from billreminder.api.v1.bills.schemas import PaymentSchema, BillSchema
 from billreminder.extensions import db
 from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, \
     HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT, HTTP_403_FORBIDDEN
-from billreminder.model.schemas import BillSchema, PaymentSchema
 from tests.api import fixtures as f
 from tests.base import BaseTest, ViewTestMixin
 
