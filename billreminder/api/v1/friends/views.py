@@ -1,15 +1,15 @@
+from flask import request
 from sqlalchemy import and_
 from sqlalchemy.orm.exc import NoResultFound
 
 from billreminder.api.v1.friends.models import FriendRequest
-from billreminder.api.v1.friends.schemas import FriendRequestSchema
+from billreminder.api.v1.friends.schemas import FriendRequestSchema, FriendSchema, FriendInvitationSchema
 from billreminder.api.v1.profile.models import User
-from billreminder.api.v1.profile.schemas import UserSchema
 from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
-from billreminder.common.resources import ListResource, CreateResource, ListCreateResource
+from billreminder.common.resources import ListResource, CreateResource, ListCreateResource, DestroyResource
 from billreminder.extensions import api_v1, db
-from billreminder.http_status import HTTP_204_NO_CONTENT
+from billreminder.http_status import HTTP_204_NO_CONTENT, HTTP_200_OK
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -79,11 +79,34 @@ class DeclineFriendRequestView(AuthMixin, CreateResource):
 
 @api_v1.resource('/friends', strict_slashes=False)
 class FriendsView(AuthMixin, ListCreateResource):
-    schema = UserSchema
+    schema = FriendSchema
     model = User
-
-    # TODO: add Friend schema, user id is needed in order to perform unfriending
 
     @property
     def query(self):
         return User.query.filter(User.id.in_([f.id for f in self.current_user.friends]))
+
+    def post(self, *args, **kwargs):
+        schema = FriendInvitationSchema(strict=True)
+        invitation, errors = schema.load(request.json)
+        if errors:
+            return ApiErrors.BAD_REQUEST.value
+
+        user = db.session.query(User).filter_by(email=invitation.email).one_or_none()
+        if user is None:
+            return ApiErrors.USER_NOT_FOUND.value
+
+        fr = FriendRequest.create(from_id=self.current_user.id, to_id=user.id)
+        fr.save()
+
+        return schema.dump(invitation).data, HTTP_200_OK
+
+
+@api_v1.resource('/friends/<int:id>', strict_slashes=False)
+class FriendView(AuthMixin, DestroyResource):
+    schema = FriendSchema
+    model = User
+
+    def delete_instance(self, instance):
+        self.current_user.unfriend(instance)
+        self.current_user.save()

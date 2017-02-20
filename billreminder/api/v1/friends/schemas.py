@@ -17,3 +17,15 @@ class FriendRequestSchema(ModelSchema):
 
     to_user = ma.Nested(UserSchema, dump_only=True, dump_to='user')
     created_at = fields.DateTime(dump_only=True)
+
+
+class FriendSchema(ma.Schema):
+    id = fields.Integer(load_only=True)
+    email = fields.Email(required=True)
+    first_name = fields.String()
+    last_name = fields.String()
+    avatar = fields.String()
+
+
+class FriendInvitationSchema(ma.Schema):
+    email = fields.Email(required=True)

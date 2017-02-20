@@ -16,3 +16,5 @@ class ApiErrors(Enum):
     ACCESS_DENIED = {'error': 'Access denied'}, HTTP_403_FORBIDDEN
     BILL_NOT_FOUND = {'error': 'Bill not found'}, HTTP_404_NOT_FOUND
     UNAUTHORIZED = {'error': 'Unauthorized'}, HTTP_401_UNAUTHORIZED
+    BAD_REQUEST = {'error': 'Invalid input data'}, HTTP_400_BAD_REQUEST
+    USER_NOT_FOUND = {'error': 'User not found'}, HTTP_404_NOT_FOUND

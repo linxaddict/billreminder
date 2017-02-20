@@ -140,6 +140,11 @@ class CreateResource(CreateMixin, BaseApiResource):
         return self.create(*args, **kwargs)
 
 
+class DestroyResource(DestroyMixin, BaseApiResource):
+    def delete(self, *args, **kwargs):
+        return self.destroy(*args, **kwargs)
+
+
 class RetrieveUpdateDestroyResource(RetrieveMixin, UpdateMixin, DestroyMixin, BaseApiResource):
     def get(self, *args, **kwargs):
         return self.retrieve(*args, **kwargs)
@@ -158,7 +163,7 @@ class ListResource(ListMixin, BaseApiResource):
         return self.retrieve(*args, **kwargs)
 
 
-class   ListCreateResource(CreateMixin, ListMixin, BaseApiResource):
+class ListCreateResource(CreateMixin, ListMixin, BaseApiResource):
     lookup_field = None
 
     def get(self, *args, **kwargs):
