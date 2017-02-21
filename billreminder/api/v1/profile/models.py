@@ -78,7 +78,9 @@ class User(UserMixin, SurrogatePK, Model):
     def unfriend(self, user):
         if user in self.friends:
             self.friends.remove(user)
-            user.friend.remove(user)
+
+        if self in user.friends:
+            user.friends.remove(self)
 
     @staticmethod
     def verify_auth_token(token):

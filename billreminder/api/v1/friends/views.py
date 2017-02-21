@@ -9,7 +9,7 @@ from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import ListResource, CreateResource, ListCreateResource, DestroyResource
 from billreminder.extensions import api_v1, db
-from billreminder.http_status import HTTP_204_NO_CONTENT, HTTP_200_OK
+from billreminder.http_status import HTTP_204_NO_CONTENT, HTTP_200_OK, HTTP_201_CREATED
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -92,14 +92,14 @@ class FriendsView(AuthMixin, ListCreateResource):
         if errors:
             return ApiErrors.BAD_REQUEST.value
 
-        user = db.session.query(User).filter_by(email=invitation.email).one_or_none()
+        user = db.session.query(User).filter_by(email=invitation['email']).one_or_none()
         if user is None:
             return ApiErrors.USER_NOT_FOUND.value
 
         fr = FriendRequest.create(from_id=self.current_user.id, to_id=user.id)
         fr.save()
 
-        return schema.dump(invitation).data, HTTP_200_OK
+        return schema.dump(invitation).data, HTTP_201_CREATED
 
 
 @api_v1.resource('/friends/<int:id>', strict_slashes=False)
@@ -110,3 +110,12 @@ class FriendView(AuthMixin, DestroyResource):
     def delete_instance(self, instance):
         self.current_user.unfriend(instance)
         self.current_user.save()
+
+    def delete(self, *args, **kwargs):
+        friend = User.query.filter_by(id=kwargs['id']).one_or_none()
+        if friend not in self.current_user.friends:
+            return ApiErrors.USER_NOT_FOUND.value
+
+        return super().delete(*args, **kwargs)
+
+

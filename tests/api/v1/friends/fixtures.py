@@ -16,6 +16,16 @@ def user(email='test@mail.com', password='test_password', first_name='test_first
     )
 
 
+def user_dict(email='test@mail.com', password='test_password', first_name='test_first_name',
+              last_name='test_last_name'):
+    return {
+        'email': email,
+        'password': password,
+        'first_name': first_name,
+        'last_name': last_name
+    }
+
+
 def friend_request(from_user=None, to_user=None):
     return FriendRequest.create(
         from_id=from_user.id,

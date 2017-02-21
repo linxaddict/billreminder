@@ -1,9 +1,12 @@
+from flask import json
 from sqlalchemy import and_
 
 import tests.api.v1.friends.fixtures as f
 from billreminder.api.v1.friends.models import FriendRequest
-from billreminder.api.v1.friends.schemas import FriendRequestSchema
-from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
+from billreminder.api.v1.friends.schemas import FriendRequestSchema, FriendSchema
+from billreminder.api.v1.profile.models import User
+from billreminder.http_status import HTTP_200_OK, HTTP_401_UNAUTHORIZED, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND, \
+    HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 from tests.base import BaseTest, ViewTestMixin
 
 __author__ = 'Marcin Przepiórkowski'
@@ -111,3 +114,111 @@ class DeclineFriendRequestViewTest(ViewTestMixin, BaseTest):
 
 class FriendsViewTest(ViewTestMixin, BaseTest):
     url = '/api/v1/friends'
+
+    def test_fetch(self):
+        u1 = f.user(email='test1@mail.com')
+        u2 = f.user(email='test2@mail.com')
+
+        user = User.query.filter_by(id=self.current_user.id).one()
+        user.friends.append(u1)
+        user.friends.append(u2)
+
+        response = self.client.get(self.url, headers=self.auth_header)
+        serialized = FriendSchema(many=True).dump([u1, u2]).data
+
+        self.assertStatus(response, HTTP_200_OK)
+        self.assertEqual(serialized, response.json['items'])
+
+    def test_fetch_empty_list(self):
+        response = self.client.get(self.url, headers=self.auth_header)
+        serialized = FriendSchema(many=True).dump([]).data
+
+        self.assertStatus(response, HTTP_200_OK)
+        self.assertEqual(serialized, response.json['items'])
+
+    def test_fetch_unauthorized(self):
+        response = self.client.get(self.url)
+        self.assertStatus(response, HTTP_401_UNAUTHORIZED)
+
+    def test_create(self):
+        friend = f.user()
+        data = {
+            'email': friend.email
+        }
+
+        response = self.client.post(self.url, data=json.dumps(data), content_type=self.json_content_type,
+                                    headers=self.auth_header)
+        friend_request = FriendRequest.query.one_or_none()
+
+        self.assertStatus(response, HTTP_201_CREATED)
+        self.assertIsNotNone(friend_request)
+        self.assertEqual(friend_request.from_id, self.current_user.id)
+        self.assertEqual(friend_request.to_id, friend.id)
+
+    def test_create_unknown_email(self):
+        data = {
+            'email': 'a@b.com'
+        }
+
+        response = self.client.post(self.url, data=json.dumps(data), content_type=self.json_content_type,
+                                    headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_404_NOT_FOUND)
+
+    def test_create_invalid_email(self):
+        data = {
+            'email': 'a@b.c'
+        }
+
+        response = self.client.post(self.url, data=json.dumps(data), content_type=self.json_content_type,
+                                    headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_400_BAD_REQUEST)
+
+    def test_create_email_missing(self):
+        data = {}
+        response = self.client.post(self.url, data=json.dumps(data), content_type=self.json_content_type,
+                                    headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_400_BAD_REQUEST)
+
+    def test_create_unauthorized(self):
+        data = {}
+        response = self.client.post(self.url, data=json.dumps(data), content_type=self.json_content_type)
+
+        self.assertStatus(response, HTTP_401_UNAUTHORIZED)
+
+
+class FriendViewTest(ViewTestMixin, BaseTest):
+    url = '/api/v1/friends/{id}'
+
+    def test_delete(self):
+        u1 = f.user(email='test1@mail.com')
+        u2 = f.user(email='test2@mail.com')
+
+        user = User.query.filter_by(id=self.current_user.id).one()
+        user.friends.append(u1)
+        user.friends.append(u2)
+
+        url = self.url.format(id=u1.id)
+        response = self.client.delete(url, headers=self.auth_header)
+        user = User.query.filter_by(id=self.current_user.id).one()
+
+        friends = [fr.id for fr in user.friends]
+        deleted_friend = User.query.filter_by(id=u1.id).one_or_none()
+
+        self.assertStatus(response, HTTP_204_NO_CONTENT)
+        self.assertFalse(u1.id in friends)
+        self.assertIsNotNone(deleted_friend)
+
+    def test_delete_invalid_id(self):
+        url = self.url.format(id=1)
+        response = self.client.delete(url, headers=self.auth_header)
+
+        self.assertStatus(response, HTTP_404_NOT_FOUND)
+
+    def test_delete_unauthorized(self):
+        url = self.url.format(id=1)
+        response = self.client.delete(url)
+
+        self.assertStatus(response, HTTP_401_UNAUTHORIZED)
