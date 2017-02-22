@@ -1,3 +1,5 @@
+from enum import Enum
+
 from sqlalchemy import ForeignKey
 
 from billreminder.database import Column, Model, SurrogatePK, db
@@ -18,7 +20,15 @@ class ReminderDate(SurrogatePK, Model):
 class Reminder(SurrogatePK, Model):
     __tablename__ = 'reminders'
 
-    unit = Column(db.Integer, nullable=False)
+    class Unit(Enum):
+        minute = 'minute'
+        hour = 'hour'
+        day = 'day'
+        week = 'week'
+        month = 'month'
+        year = 'year'
+
+    unit = Column(db.Enum(Unit), nullable=False)
     value = Column(db.Integer, nullable=False)
     start = Column(db.DateTime(timezone=True), nullable=False)
     end = Column(db.DateTime(timezone=True), nullable=False)

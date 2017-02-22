@@ -144,7 +144,7 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
 
     def test_update(self):
         reminder = f.reminder(self.current_user)
-        reminder_dict = f.reminder_dict(self.current_user, unit=14, value=15,
+        reminder_dict = f.reminder_dict(self.current_user, value=15,
                                         dates=['2017-02-15T11:01:59+0000', '2017-06-15T11:01:59+0000'],
                                         start='2017-02-14T11:01:59+0000',
                                         end='2017-02-15T11:01:59+0000')
@@ -189,7 +189,7 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
 
     def test_update_start_after_end(self):
         reminder = f.reminder(self.current_user)
-        reminder_dict = f.reminder_dict(self.current_user, unit=14, value=15,
+        reminder_dict = f.reminder_dict(self.current_user, value=15,
                                         dates=['2017-02-15T11:01:59+0000', '2017-06-15T11:01:59+0000'],
                                         start='2017-02-16T11:01:59+0000',
                                         end='2017-02-15T11:01:59+0000')
@@ -201,7 +201,7 @@ class ReminderViewTest(ViewTestMixin, BaseTest):
 
     def test_update_start_equals_to_end(self):
         reminder = f.reminder(self.current_user)
-        reminder_dict = f.reminder_dict(self.current_user, unit=14, value=15,
+        reminder_dict = f.reminder_dict(self.current_user, unit=Reminder.Unit.month, value=15,
                                         dates=['2017-02-15T11:01:59+0000', '2017-06-15T11:01:59+0000'],
                                         start='2017-02-15T11:01:59+0000',
                                         end='2017-02-15T11:01:59+0000')

@@ -24,7 +24,7 @@ def reminder_date(owner, reminder, date='2017-02-13T11:01:59+0000'):
 
 
 # noinspection PyDefaultArgument
-def reminder(owner, unit=12, value=23, start='2017-02-13T11:01:59+0000', end='2017-02-14T11:01:59+0000'):
+def reminder(owner, unit=Reminder.Unit.day, value=23, start='2017-02-13T11:01:59+0000', end='2017-02-14T11:01:59+0000'):
     return Reminder.create(
         owner_id=owner.id,
         unit=unit,
@@ -35,11 +35,11 @@ def reminder(owner, unit=12, value=23, start='2017-02-13T11:01:59+0000', end='20
 
 
 # noinspection PyDefaultArgument
-def reminder_dict(owner, dates=['2017-02-13T11:01:59+0000'], unit=12, value=23,
+def reminder_dict(owner, dates=['2017-02-13T11:01:59+0000'], unit=Reminder.Unit.day, value=23,
                   start='2017-02-13T11:01:59+0000', end='2017-02-14T11:01:59+0000'):
     return {
         'owner_id': owner.id,
-        'unit': unit,
+        'unit': unit.value,
         'value': value,
         'start': start,
         'end': end,

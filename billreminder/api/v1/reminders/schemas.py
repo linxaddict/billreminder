@@ -3,6 +3,7 @@ from marshmallow import fields
 from marshmallow import post_dump
 from marshmallow import pre_load
 from marshmallow import validates_schema
+from marshmallow_enum import EnumField as Enum
 
 from billreminder.api.v1.reminders.models import ReminderDate, Reminder
 from billreminder.extensions import ma, db
@@ -36,7 +37,7 @@ class ReminderSchema(ma.ModelSchema):
         exclude = ('owner', 'owner_id')
 
     id = fields.Integer(dump_only=True)
-    unit = fields.Integer(required=False)
+    unit = Enum(Reminder.Unit, required=False)
     value = fields.Integer(required=False)
     start = fields.DateTime(required=True, format=DATE_FORMAT)
     end = fields.DateTime(required=False, format=DATE_FORMAT)

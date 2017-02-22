@@ -12,7 +12,7 @@ __email__ = 'mprzepiorkowski@gmail.com'
 class TestReminderSchema(TestCase):
     def test_load(self):
         data = {
-            'unit': 1,
+            'unit': 'day',
             'value': 12,
             'start': '2017-02-06T17:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -32,7 +32,7 @@ class TestReminderSchema(TestCase):
 
         self.assertEqual(len(errors.keys()), 0)
 
-        self.assertEqual(data['unit'], loaded.unit)
+        self.assertEqual(data['unit'], loaded.unit.value)
         self.assertEqual(data['value'], loaded.value)
         self.assertEqual(start, loaded.start)
         self.assertEqual(end, loaded.end)
@@ -43,7 +43,7 @@ class TestReminderSchema(TestCase):
     def test_load_id_not_loaded(self):
         data = {
             'id': 1,
-            'unit': 1,
+            'unit': 'day',
             'value': 12,
             'start': '2017-02-06T17:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -60,7 +60,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_start_bad_format(self):
         data = {
-            'unit': 1,
+            'unit': 'month',
             'value': 12,
             'start': '2017-02-06 17:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -77,7 +77,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_end_bad_format(self):
         data = {
-            'unit': 1,
+            'unit': 'year',
             'value': 12,
             'start': '2017-02-06T17:47:32+0100',
             'end': '2017-02-06 18:47:32+0100',
@@ -94,7 +94,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_dates_bad_format(self):
         data = {
-            'unit': 1,
+            'unit': 'day',
             'value': 12,
             'start': '2017-02-06T17:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -111,7 +111,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_start_missing(self):
         data = {
-            'unit': 1,
+            'unit': 'hour',
             'value': 12,
             'end': '2017-02-06T18:47:32+0100',
             'dates': [
@@ -127,7 +127,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_start_after_end(self):
         data = {
-            'unit': 1,
+            'unit': 'minute',
             'value': 12,
             'start': '2017-02-06T19:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -145,7 +145,7 @@ class TestReminderSchema(TestCase):
 
     def test_load_start_equals_to_end(self):
         data = {
-            'unit': 1,
+            'unit': 'hour',
             'value': 12,
             'start': '2017-02-06T18:47:32+0100',
             'end': '2017-02-06T18:47:32+0100',
@@ -170,7 +170,7 @@ class TestReminderSchema(TestCase):
 
         reminder = Reminder()
         reminder.id = 1
-        reminder.unit = 4
+        reminder.unit = Reminder.Unit.day
         reminder.value = 12
         reminder.start = datetime.datetime.strptime('2017-02-06T17:47:32+0100', DATE_FORMAT)
         reminder.end = datetime.datetime.strptime('2017-02-06T18:47:32+0100', DATE_FORMAT)
@@ -182,7 +182,7 @@ class TestReminderSchema(TestCase):
         self.assertEqual(len(errors.keys()), 0)
 
         self.assertEqual(reminder.id, dumped['id'])
-        self.assertEqual(reminder.unit, dumped['unit'])
+        self.assertEqual(reminder.unit.value, dumped['unit'])
         self.assertEqual(reminder.value, dumped['value'])
         self.assertEqual(reminder.start, datetime.datetime.strptime(dumped['start'], DATE_FORMAT))
         self.assertEqual(reminder.end, datetime.datetime.strptime(dumped['end'], DATE_FORMAT))
