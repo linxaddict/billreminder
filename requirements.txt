@@ -14,11 +14,13 @@ Flask-RESTful==0.3.5
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
 Flask-Testing==0.6.1
+gunicorn==19.6.0
 itsdangerous==0.24
 Jinja2==2.9.4
 Mako==1.0.6
 MarkupSafe==0.23
 marshmallow==2.12.1
+marshmallow-enum==1.0
 marshmallow-sqlalchemy==0.12.1
 mccabe==0.6.1
 psycopg2==2.6.2
