@@ -15,7 +15,7 @@ users_bills = db.Table(
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('bill_id', db.Integer, db.ForeignKey('bills.id'))
 )
-
+s
 
 class Payment(SurrogatePK, Model):
     __tablename__ = 'payments'
@@ -33,9 +33,9 @@ class Bill(SurrogatePK, Model):
     __tablename__ = 'bills'
 
     name = Column(db.String, nullable=False)
-    description = Column(db.String, nullable=False)
-    amount = Column(db.Float, nullable=False)
-    last_payment = Column(db.DateTime(timezone=True))
+    description = Column(db.String, nullable=True)
+    amount = Column(db.Float, nullable=True)
+    last_payment = Column(db.DateTime(timezone=True), nullable=True)
     due_date = Column(db.DateTime(timezone=True), nullable=True)
 
     owner_id = Column(db.Integer, ForeignKey('users.id'))
