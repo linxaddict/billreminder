@@ -36,6 +36,7 @@ class Bill(SurrogatePK, Model):
     description = Column(db.String, nullable=False)
     amount = Column(db.Float, nullable=False)
     last_payment = Column(db.DateTime(timezone=True))
+    due_date = Column(db.DateTime(timezone=True), nullable=True)
 
     owner_id = Column(db.Integer, ForeignKey('users.id'))
     payments = db.relationship(Payment, backref='bill')

@@ -24,6 +24,7 @@ class BillSchema(ModelSchema):
     description = fields.String(required=True)
     amount = fields.Float(required=True, validate=lambda n: n >= 0)
     last_payment = fields.DateTime(allow_none=True, format=DATE_FORMAT)
+    due_date = fields.DateTime(allow_none=True, format=DATE_FORMAT)
     participants = ma.List(ma.Nested(UserSchema))
     payments = ma.List(ma.Nested(PaymentSchema))
     owner = ma.Nested(UserSchema)
