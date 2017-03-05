@@ -15,7 +15,7 @@ users_bills = db.Table(
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('bill_id', db.Integer, db.ForeignKey('bills.id'))
 )
-s
+
 
 class Payment(SurrogatePK, Model):
     __tablename__ = 'payments'
