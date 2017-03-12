@@ -8,7 +8,7 @@ __email__ = 'mprzepiorkowski@gmail.com'
 
 
 class UserSchema(ma.Schema):
-    id = fields.Integer(load_only=True)
+    id = fields.Integer()
     email = fields.Email(required=True)
     password = fields.String(required=True, load_only=True, validate=PasswordValidator())
     first_name = fields.String()

@@ -1,4 +1,5 @@
 import datetime as dt
+from enum import Enum
 
 from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
@@ -32,11 +33,21 @@ class Payment(SurrogatePK, Model):
 class Bill(SurrogatePK, Model):
     __tablename__ = 'bills'
 
+    class RepeatMode(Enum):
+        minute = 'minute'
+        hour = 'hour'
+        day = 'day'
+        week = 'week'
+        month = 'month'
+        year = 'year'
+
     name = Column(db.String, nullable=False)
     description = Column(db.String, nullable=True)
     amount = Column(db.Float, nullable=True)
     last_payment = Column(db.DateTime(timezone=True), nullable=True)
     due_date = Column(db.DateTime(timezone=True), nullable=True)
+    repeat_mode = Column(db.Enum(RepeatMode), nullable=True)
+    repeat_value = Column(db.Integer, nullable=True)
 
     owner_id = Column(db.Integer, ForeignKey('users.id'))
     payments = db.relationship(Payment, backref='bill')
