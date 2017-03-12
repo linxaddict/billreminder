@@ -1,3 +1,4 @@
+from flask_admin import Admin
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
@@ -11,3 +12,4 @@ login_manager = LoginManager()
 db = SQLAlchemy()
 ma = Marshmallow()
 migrate = Migrate()
+admin = Admin()

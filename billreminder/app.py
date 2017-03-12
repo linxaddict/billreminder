@@ -3,11 +3,16 @@ from marshmallow import ValidationError
 from sqlalchemy.orm.exc import NoResultFound
 
 from billreminder import commands
-from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_v1 as api_v1_config
+from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_v1 as api_v1_config, admin
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from billreminder.settings import ProdConfig
 
 from billreminder.api.v1 import views
+
+from billreminder.api.v1.bills.admin import views as bills_views
+from billreminder.api.v1.friends.admin import views as friends_views
+from billreminder.api.v1.profile.admin import views as profiles_views
+from billreminder.api.v1.reminders.admin import views as reminders_views
 
 
 def create_app(config_object=ProdConfig):
@@ -19,6 +24,8 @@ def create_app(config_object=ProdConfig):
     register_error_handlers(app)
     register_shell_context(app)
     register_commands(app)
+
+    add_admin_views()
 
     return app
 
@@ -32,8 +39,21 @@ def register_extensions(app):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     api_v1_config.init_app(api.blueprint)
+    admin.init_app(app)
 
     return None
+
+
+def add_admin_views():
+    views = []
+
+    views += bills_views
+    views += friends_views
+    views += profiles_views
+    views += reminders_views
+
+    for view in views:
+        admin.add_view(view)
 
 
 def register_blueprints(app):
