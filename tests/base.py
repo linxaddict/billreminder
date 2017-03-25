@@ -1,7 +1,7 @@
 import json
 
 from flask_testing import TestCase
-
+from billreminder.api.v1 import models
 from billreminder.api.v1.profile.models import User
 from billreminder.extensions import db
 

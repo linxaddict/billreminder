@@ -8,6 +8,7 @@ from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from billreminder.settings import ProdConfig
 
 from billreminder.api.v1 import views
+from billreminder.api.v1 import models
 
 from billreminder.api.v1.bills.admin import views as bills_views
 from billreminder.api.v1.friends.admin import views as friends_views

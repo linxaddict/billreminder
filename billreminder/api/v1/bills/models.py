@@ -25,7 +25,7 @@ class Payment(SurrogatePK, Model):
     bill_id = Column(Integer, ForeignKey('bills.id'))
     created_at = Column(db.DateTime(timezone=True), nullable=False, default=dt.datetime.utcnow)
 
-    def __init__(self, user_id, bill_id, **kwargs):
+    def __init__(self, user_id=None, bill_id=None, **kwargs):
         self.user_id = user_id
         self.bill_id = bill_id
 

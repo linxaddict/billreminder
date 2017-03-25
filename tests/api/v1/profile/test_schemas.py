@@ -136,7 +136,7 @@ class TestUserSchema(TestCase):
         schema = UserSchema()
         dumped = schema.dump(data).data
 
-        self.assertFalse('id' in dumped)
+        self.assertTrue('id' in dumped)
         self.assertTrue('email' in dumped)
         self.assertFalse('password' in dumped)
         self.assertTrue('first_name' in dumped)

@@ -7,6 +7,8 @@ from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCre
 from billreminder.extensions import api_v1, db
 from billreminder.http_status import HTTP_200_OK
 
+from datetime import datetime as dt
+
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
@@ -53,6 +55,7 @@ class PaymentView(AuthMixin, BaseApiResource):
             return ApiErrors.ACCESS_DENIED.value
 
         payment = Payment(user_id=self.current_user.id, bill_id=id)
+        bill.last_payment = dt.now()
 
         db.session.add(payment)
         db.session.commit()
