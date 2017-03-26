@@ -6,6 +6,7 @@ from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCre
     ListResource
 from billreminder.extensions import api_v1, db
 from billreminder.http_status import HTTP_200_OK
+from billreminder.db.database import BillReminderDb
 
 from datetime import datetime as dt
 
@@ -47,18 +48,23 @@ class PaymentView(AuthMixin, BaseApiResource):
         return self.current_user in instance.participants
 
     def post(self, id):
-        bill = Bill.query.filter(Bill.id == id).one_or_none()
+        from billreminder.model.bills import Bill, Payment
+        # bill = Bill.query.filter(Bill.id == id).one_or_none()
+        brdb = BillReminderDb(db)
+        bill = brdb.fetch_by_id(Bill, id)
         if not bill:
             return ApiErrors.BILL_NOT_FOUND.value
 
         if not self.has_access(bill):
             return ApiErrors.ACCESS_DENIED.value
 
-        payment = Payment(user_id=self.current_user.id, bill_id=id)
+        payment = Payment(user=self.current_user, bill=bill)
         bill.last_payment = dt.now()
+        brdb.update(bill)
 
-        db.session.add(payment)
-        db.session.commit()
+        # db.session.add(payment)
+        # db.session.commit()
+        brdb.create(payment)
 
         return PaymentSchema().dump(payment).data, HTTP_200_OK
 
