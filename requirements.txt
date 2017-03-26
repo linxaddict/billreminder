@@ -33,6 +33,7 @@ pytest==3.0.5
 python-dateutil==2.6.0
 python-editor==1.0.3
 pytz==2016.10
+Rx==1.5.8
 six==1.10.0
 SQLAlchemy==1.1.4
 Werkzeug==0.11.15
