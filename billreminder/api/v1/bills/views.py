@@ -1,3 +1,4 @@
+from billreminder.api.errors import NotFoundError, AccessDeniedError
 from billreminder.api.v1.models import *
 from billreminder.api.v1.bills.schemas import *
 from billreminder.common.auth import AuthMixin
@@ -54,29 +55,38 @@ class PaymentView(AuthMixin, BaseApiResource):
 
         return self.current_user in instance.participants
 
-    # todo: map to payment
-    def map_to_response(self, bill, brdb):
+    def handle_api_error(self, error):
+        if isinstance(error, NotFoundError):
+            self.set_response(ApiErrors.BILL_NOT_FOUND.value)
+        elif isinstance(error, AccessDeniedError):
+            self.set_response(ApiErrors.ACCESS_DENIED.value)
+        else:
+            self.set_response(ApiErrors.BAD_REQUEST.value)
+
+    def map_to_payment(self, bill, brdb):
         from billreminder.model.bills import Payment
 
-        # todo: raise access denied error
+        if bill is None:
+            raise NotFoundError()
+
         if not self.has_access(bill):
-            return ApiErrors.ACCESS_DENIED.value
+            raise AccessDeniedError()
 
         payment = Payment(user=self.current_user, bill=bill)
         bill.last_payment = dt.now()
         brdb.update(bill)
         brdb.create(payment)
 
-        return PaymentSchema().dump(payment).data, HTTP_200_OK
+        return payment
 
     def post(self, id):
         from billreminder.model.bills import Bill
 
         brdb = BillReminderDb(db)
         brdb.fetch_by_id(Bill, id)\
-            .map(lambda b: self.map_to_response(b, brdb))\
-            .subscribe(lambda r: self.set_response(r),
-                       lambda e: self.set_response(ApiErrors.BILL_NOT_FOUND.value))
+            .map(lambda b: self.map_to_payment(b, brdb))\
+            .subscribe(lambda p: self.set_response((PaymentSchema().dump(p).data, HTTP_200_OK)),
+                       lambda e: self.handle_api_error(e))
 
         return self.response
 
