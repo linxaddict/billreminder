@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from sqlalchemy.orm.exc import NoResultFound
 
 from billreminder import commands
+from billreminder.db.database import BillReminderDb
 from billreminder.extensions import bcrypt, db, login_manager, ma, migrate, api_v1 as api_v1_config, admin
 from billreminder.http_status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 from billreminder.settings import ProdConfig

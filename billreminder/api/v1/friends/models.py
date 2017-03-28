@@ -1,6 +1,7 @@
 from billreminder.api.v1.models import *
 from billreminder.database import SurrogatePK, Model
 from billreminder.extensions import db
+from billreminder.model.friends import FriendRequest as PlainFriendRequest
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'

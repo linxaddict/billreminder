@@ -5,11 +5,12 @@ from billreminder.common.auth import AuthMixin
 from billreminder.common.errors import ApiErrors
 from billreminder.common.resources import RetrieveUpdateDestroyResource, ListCreateResource, BaseApiResource, \
     ListResource
-from billreminder.extensions import api_v1, db
+from billreminder.extensions import api_v1
 from billreminder.http_status import HTTP_200_OK
-from billreminder.db.database import BillReminderDb
 
 from datetime import datetime as dt
+
+from billreminder.services import br_db
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
@@ -55,15 +56,7 @@ class PaymentView(AuthMixin, BaseApiResource):
 
         return self.current_user in instance.participants
 
-    def handle_api_error(self, error):
-        if isinstance(error, NotFoundError):
-            self.set_response(ApiErrors.BILL_NOT_FOUND.value)
-        elif isinstance(error, AccessDeniedError):
-            self.set_response(ApiErrors.ACCESS_DENIED.value)
-        else:
-            self.set_response(ApiErrors.BAD_REQUEST.value)
-
-    def map_to_payment(self, bill, brdb):
+    def map_to_payment(self, bill):
         from billreminder.model.bills import Payment
 
         if bill is None:
@@ -74,21 +67,23 @@ class PaymentView(AuthMixin, BaseApiResource):
 
         payment = Payment(user=self.current_user, bill=bill)
         bill.last_payment = dt.now()
-        brdb.update(bill)
-        brdb.create(payment)
+        br_db.update(bill)
+        br_db.create(payment)
 
         return payment
 
     def post(self, id):
         from billreminder.model.bills import Bill
 
-        brdb = BillReminderDb(db)
-        brdb.fetch_by_id(Bill, id)\
-            .map(lambda b: self.map_to_payment(b, brdb))\
-            .subscribe(lambda p: self.set_response((PaymentSchema().dump(p).data, HTTP_200_OK)),
-                       lambda e: self.handle_api_error(e))
+        try:
+            bill = br_db.fetch_by_id(Bill, id)
+            payment = self.map_to_payment(bill)
+        except NotFoundError:
+            return ApiErrors.BILL_NOT_FOUND.value
+        except AccessDeniedError:
+            return ApiErrors.ACCESS_DENIED.value
 
-        return self.response
+        return PaymentSchema().dump(payment).data, HTTP_200_OK
 
 
 @api_v1.resource('/bills/<int:bill_id>/history', strict_slashes=False)
@@ -98,13 +93,13 @@ class PaymentHistory(AuthMixin, ListResource):
     lookup_field = 'bill_id'
 
     def get(self, *args, **kwargs):
-        bill = Bill.query.filter(Bill.id == kwargs['bill_id'])\
-            .filter(Bill.owner_id == self.current_user.id).one_or_none()
+        from billreminder.model.bills import Bill
+
+        bill = br_db.fetch_by_id(Bill, kwargs['bill_id'])
         if not bill:
-            b = Bill.query.filter(Bill.id == kwargs['bill_id']).one_or_none()
-            if not b:
-                return ApiErrors.BILL_NOT_FOUND.value
-            else:
-                return ApiErrors.ACCESS_DENIED.value
+            return ApiErrors.BILL_NOT_FOUND.value
+
+        if bill.owner.id != self.current_user.id:
+            return ApiErrors.ACCESS_DENIED.value
 
         return super().get(*args, **kwargs)
