@@ -2,38 +2,39 @@ from enum import Enum
 
 from sqlalchemy import ForeignKey
 
-from billreminder.database import Column, Model, SurrogatePK, db, PlainModelMeta
-from billreminder.model.reminders import Reminder as PlainReminder,\
+from billreminder.database import Column, Model, SurrogatePK, db
+from billreminder.model.reminders import Reminder as PlainReminder, \
     ReminderDate as PlainReminderDate
 
 __author__ = 'Marcin Przepiórkowski'
 __email__ = 'mprzepiorkowski@gmail.com'
 
 
-class ReminderDate(SurrogatePK, Model, metaclass=PlainModelMeta):
+class ReminderDate(SurrogatePK, Model):
     __tablename__ = 'reminder_dates'
 
     date = Column(db.DateTime(timezone=True), nullable=False)
-    reminder = db.relationship('Reminder', backref=db.backref('dates', cascade='all, delete-orphan'))
+    reminder = db.relationship('Reminder',
+                               backref=db.backref('dates', cascade='all, delete-orphan'))
     reminder_id = Column(db.Integer, ForeignKey('reminders.id'))
     owner_id = Column(db.Integer, ForeignKey('users.id'))
 
-    # def as_plain_object(self):
-    #     return PlainReminderDate(reminder=self.reminder, date=self.date, owner=self.owner)
+    def as_plain_object(self):
+        return PlainReminderDate(reminder=self.reminder, date=self.date, owner=self.owner)
 
-    # @staticmethod
-    # def create_from(plain):
-    #     ReminderDate.create(data=plain.data, reminder=plain.reminder, owner_id=plain.owner.id)
-    #
-    # @staticmethod
-    # def update_with(plain):
-    #     reminder_date = ReminderDate.get_by_id(plain.id)
-    #     reminder = Reminder.get_by_id(plain.reminder.id)
-    #
-    #     if reminder_date and reminder:
-    #         reminder_date.date = plain.date
-    #         reminder_date.reminder = reminder
-    #         reminder_date.owner_id = plain.owner.id
+    @staticmethod
+    def create_from(plain):
+        ReminderDate.create(data=plain.data, reminder=plain.reminder, owner_id=plain.owner.id)
+
+    @staticmethod
+    def update_with(plain):
+        reminder_date = ReminderDate.get_by_id(plain.id)
+        reminder = Reminder.get_by_id(plain.reminder.id)
+
+        if reminder_date and reminder:
+            reminder_date.date = plain.date
+            reminder_date.reminder = reminder
+            reminder_date.owner_id = plain.owner.id
 
 
 class Reminder(SurrogatePK, Model):
@@ -63,8 +64,8 @@ class Reminder(SurrogatePK, Model):
 
     @staticmethod
     def create_from(plain):
-        Reminder.create(unit=plain.unit, value=plain.value, start=plain.start, end=plain.end,
-                        owner_id=plain.owner.id)
+        return Reminder.create(unit=plain.unit, value=plain.value, start=plain.start, end=plain.end,
+                               owner_id=plain.owner.id)
 
     @staticmethod
     def update_with(plain):

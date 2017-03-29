@@ -34,7 +34,8 @@ class Payment(SurrogatePK, Model):
 
     @staticmethod
     def create_from(plain):
-        Payment.create(user_id=plain.user.id, bill_id=plain.bill.id, created_at=plain.created_at)
+        return Payment.create(user_id=plain.user.id, bill_id=plain.bill.id,
+                              created_at=plain.created_at)
 
     @staticmethod
     def update_with(plain):
@@ -73,10 +74,12 @@ class Bill(SurrogatePK, Model):
 
     @staticmethod
     def create_from(plain):
-        Bill.create(id=plain.id, name=plain.name, description=plain.description,
-                    amount=plain.amount, last_payment=plain.last_payment, due_date=plain.due_date,
-                    repeat_mode=plain.repeat_mode, repeat_value=plain.repeat_value,
-                    owner=plain.owner, payments=plain.payments, participants=plain.participants)
+        return Bill.create(id=plain.id, name=plain.name, description=plain.description,
+                           amount=plain.amount, last_payment=plain.last_payment,
+                           due_date=plain.due_date,
+                           repeat_mode=plain.repeat_mode, repeat_value=plain.repeat_value,
+                           owner=plain.owner, payments=plain.payments,
+                           participants=plain.participants)
 
     @staticmethod
     def update_with(plain):

@@ -16,3 +16,23 @@ class FriendRequest(SurrogatePK, Model):
 
     from_user = db.relationship('User', foreign_keys=[from_id])
     to_user = db.relationship('User', foreign_keys=[to_id])
+
+    def as_plain_object(self):
+        return PlainFriendRequest(from_user=self.from_user, to_user=self.to_user,
+                                  created_at=self.created_at)
+
+    @staticmethod
+    def create_from(plain):
+        return FriendRequest.create(from_user=plain.from_user, to_user=plain.to_user,
+                                    created_at=plain.created_at)
+
+    @staticmethod
+    def update_with(plain):
+        request = FriendRequest.get_by_id(plain.id)
+
+        if request is not None:
+            request.from_user = plain.from_user
+            request.to_user = plain.to_user
+            request.created_at = plain.created_at
+
+            request.save()
